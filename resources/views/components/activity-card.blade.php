@@ -1,0 +1,10 @@
+<div class="flex flex-col gap-1 mb-4 dark:bg-[#212121] bg-white rounded-lg mt-2 p-8 h-max">
+    <div class="flex items-center justify-between mb-2">
+        <h2 class="text-xl font-semibold dark:text-gray-300">Community activity</h2>
+        <span class="text-sm text-blue-600 dark:text-yellow-600 font-medium">Last 1h</span>
+    </div>
+    <span class="dark:text-neutral-300 text-neutral-700">xxxx users online</span>
+    <span class="dark:text-neutral-300 text-neutral-700">xxxx questions</span>
+    <span class="dark:text-neutral-300 text-neutral-700">xxxx answers</span>
+    <span class="dark:text-neutral-300 text-neutral-700">xxxx comments</span>
+</div>
