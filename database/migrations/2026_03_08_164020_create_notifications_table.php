@@ -18,10 +18,9 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
             $table->foreignId('actor_id')
-                ->constrained()
-                ->cascadeOnDelete();
+                ->nullable()
+                ->constrained('users');
 
-            $table->string('type');
             $table->morphs('notifiable');
             
             $table->timestamps();
