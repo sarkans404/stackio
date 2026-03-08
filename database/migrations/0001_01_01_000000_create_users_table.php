@@ -21,11 +21,7 @@ return new class extends Migration
             $table->string('avatar')->nullable();
             $table->string('reputation')->default(0);
             $table->enum('role', ['customer', 'admin'])->default('customer');
-            $table->integer('reputation')->default(0);
-            $table->string('avatar')->nullable();
             $table->string('bio');
-            $table->timestamp('created_at')->nullable();
-            $table->timestamp('updated_at')->nullable();
             
             $table->rememberToken();
             $table->timestamps();
