@@ -24,8 +24,8 @@ return new class extends Migration
                 ->cascadeOnDelete();
 
             $table->text('body');
-            $table->boolean('is_accepted')->default('true');
-            $table->boolean('is_correct')->default('false');
+            $table->boolean('is_accepted')->default(true);
+            $table->boolean('is_correct')->default(false);
             $table->string('image')->nullable();
             
             $table->integer('upvotes')->default(0);
