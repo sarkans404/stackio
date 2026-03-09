@@ -1,11 +1,14 @@
-<div data-id="{{ $question['id'] }}"
+<div data-id="{{ $question->id }}"
     class="post-card w-full my-2 border-b px-4 border-neutral-300 dark:border-neutral-700 bg-[#f8f8f8] dark:bg-[#101314] py-3 dark:hover:bg-neutral-800 hover:bg-neutral-100 duration-300 cursor-pointer">
     <div class="flex items-center justify-between mb-2">
         <div class="flex items-center gap-2 text-sm">
-            <div class="w-8 h-8 bg-gray-300 dark:bg-gray-200 rounded-full overflow-hidden"></div>
-            <span class="font-medium text-neutral-700 dark:text-gray-300">{{ $question['author'] }}</span>
+            <div class="w-8 h-8 bg-gray-300 dark:bg-gray-200 rounded-full overflow-hidden">
+                <img src="{{ $question->user->avatar }}" alt="Avatar"
+                    class="rounded-full w-full h-full object-cover object-center">
+            </div>
+            <span class="font-medium text-neutral-700 dark:text-gray-300">{{ $question->user->username }}</span>
             &bull;
-            <span class="text-neutral-500 dark:text-gray-400">{{ $question['date'] }}</span>
+            <span class="text-neutral-500 dark:text-gray-400">{{ $question->date }}</span>
         </div>
 
         <div class="relative">
@@ -74,15 +77,15 @@
     </div>
 
     <div class="">
-        <h2 class="text-2xl font-semibold mb-4">{{ Str::limit($question['title'], 100) }}</h2>
-        <p class="text-gray-600 dark:text-gray-400">{{ Str::limit($question['content'], 200) }}</p>
+        <h2 class="text-2xl font-semibold mb-4">{{ Str::limit($question->title, 100) }}</h2>
+        <p class="text-gray-600 dark:text-gray-400">{{ Str::limit($question->body, 200) }}</p>
 
-        @if (isset($question['image']))
+        @foreach ($question->images as $image)
             <div
-                class="w-full overflow-hidden my-5 dark:bg-neutral-800 backdrop-blur-xl bg-[url({{ $question['image'] }})] bg-neutral-100 rounded-lg h-140 bg-center bg-no-repeat">
-                <img src="{{ $question['image'] }}" alt="Image" class="mx-auto object-contain h-140 rounded-lg">
+                class="w-full overflow-hidden my-5 dark:bg-neutral-800 backdrop-blur-xl bg-neutral-100 rounded-lg h-140 bg-center bg-no-repeat">
+                <img src="{{ $image->image }}" alt="Image" class="mx-auto object-contain h-140 rounded-lg">
             </div>
-        @endif
+        @endforeach
     </div>
 
     <div class="flex items-center gap-4">
@@ -97,7 +100,7 @@
                 </svg>
             </button>
 
-            <span class="font-medium select-none">{{ $question['upvotes'] }}</span>
+            <span class="font-medium select-none">{{ $question->upvotes }}</span>
 
             <button id="downvote"
                 class="dark:bg-[#333333] bg-gray-300 w-10 h-10 rounded-full dark:hover:bg-neutral-700 hover:bg-gray-400 flex items-center justify-center duration-300 cursor-pointer">
@@ -110,14 +113,14 @@
             </button>
         </div>
 
-        <a href="{{ route('question.show', 99) }}"
+        <a href="{{ route('question.show', $question->id) }}"
             class="flex items-center justify-center gap-2 dark:bg-[#333333] rounded-full bg-gray-300 px-3 h-10 cursor-pointer dark:hover:bg-neutral-700 hover:bg-gray-400">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="size-6">
                 <path stroke-linecap="round" stroke-linejoin="round"
                     d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 0 1-.923 1.785A5.969 5.969 0 0 0 6 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337Z" />
             </svg>
-            <span class="font-medium select-none">11</span>
+            <span class="font-medium select-none">{{ $question->answers }}</span>
         </a>
 
         <div class="relative">
@@ -135,7 +138,7 @@
 
             <div
                 class="menu share-menu hidden absolute -bottom-2 left-0 translate-y-full rounded-lg dark:bg-[#1d1f20] bg-[#f8f8f8] w-max flex flex-col gap-1 shadow-lg">
-                <button type="button" data-url="{{ route('question.show', $question['id']) }}"
+                <button type="button" data-url="{{ route('question.show', $question->id) }}"
                     class="copy-link-btn w-full flex items-center gap-4 px-4 py-2 cursor-pointer bg-[#f8f8f8] dark:bg-[#101314] hover:bg-gray-200 dark:hover:bg-[#313232] duration-300 rounded-lg duration-300">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
