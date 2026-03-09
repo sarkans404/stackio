@@ -6,5 +6,30 @@ use Illuminate\Database\Eloquent\Model;
 
 class Responses extends Model
 {
-    //
+    protected $fillable = [
+        'user_id',
+        'question_id',
+        'parent_id',
+        'body',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function question()
+    {
+        return $this->belongsTo(Question::class);
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Responses::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Responses::class, 'parent_id');
+    }
 }
