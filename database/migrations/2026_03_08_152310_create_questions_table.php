@@ -16,14 +16,16 @@ return new class extends Migration
             $table->foreignId('user_id')
                 ->constrained()
                 ->cascadeOnDelete();
-            
+
             $table->string('title');
             $table->text('body');
+            $table->date('date')->default(now());
             $table->integer('views')->default(0);
             $table->integer('upvotes')->default(0);
             $table->integer('downvotes')->default(0);
+            $table->integer('answers')->default(0);
             $table->integer('reports')->default(0);
-            
+
             $table->timestamps();
         });
     }
