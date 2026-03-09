@@ -8,15 +8,12 @@
         <div class="">
             @forelse ($questions as $question)
                 <x-post-card :question="$question" />
-                <x-post-card :question="$question" />
-                <x-post-card :question="$question" />
-                <x-post-card :question="$question" />
             @empty
                 <p class="text-center my-10">No questions found.</p>
             @endforelse
         </div>
 
-        <x-aside-card :question="$question" />
+        <x-aside-card :question="$question" :questionsQty="$questionsQty" />
 
     </section>
 @endsection
