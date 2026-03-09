@@ -4,7 +4,7 @@
         <span class="text-sm text-blue-600 dark:text-yellow-600 font-medium">Last 1h</span>
     </div>
     <span class="dark:text-neutral-300 text-neutral-700">xxxx users online</span>
-    <span class="dark:text-neutral-300 text-neutral-700">xxxx questions</span>
+    <span class="dark:text-neutral-300 text-neutral-700">{{ $questionsQty }} questions</span>
     <span class="dark:text-neutral-300 text-neutral-700">xxxx answers</span>
     <span class="dark:text-neutral-300 text-neutral-700">xxxx comments</span>
 </div>
