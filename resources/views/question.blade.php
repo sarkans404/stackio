@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    {{ $question['title'] }}
+    {{ $question->title }}
 @endsection
 
 @section('content')
@@ -14,8 +14,8 @@
                     <div class="w-12 h-12 bg-gray-300 dark:bg-gray-200 rounded-full overflow-hidden"></div>
                     <div class="flex flex-col justify-center">
                         <span
-                            class="font-medium text-neutral-700 dark:text-gray-300 leading-4">{{ $question['author'] }}</span>
-                        <span class="text-neutral-500 dark:text-gray-400">{{ $question['date'] }}</span>
+                            class="font-medium text-neutral-700 dark:text-gray-300 leading-4">{{ $question->user->username }}</span>
+                        <span class="text-neutral-500 dark:text-gray-400">{{ $question->date }}</span>
                     </div>
 
                     <div id="back-btn"
@@ -84,15 +84,15 @@
             </div>
 
             <div>
-                <h2 class="text-5xl font-semibold mb-6">{{ $question['title'] }}</h2>
-                <p class="text-gray-700 dark:text-gray-400">{{ $question['content'] }}</p>
+                <h2 class="text-5xl font-semibold mb-6">{{ $question->title }}</h2>
+                <p class="text-gray-700 dark:text-gray-400">{{ $question->body }}</p>
 
-                @if ($question['image'])
+                @foreach ($question->images as $image)
                     <div
                         class="w-full overflow-hidden my-5 dark:bg-neutral-800 backdrop-blur-xl bg-neutral-100 rounded-lg h-140 bg-center bg-no-repeat">
-                        <img src="{{ $question['image'] }}" alt="Image" class="mx-auto object-contain h-140 rounded-lg">
+                        <img src="{{ $image->image }}" alt="Image" class="mx-auto object-contain h-140 rounded-lg">
                     </div>
-                @endif
+                @endforeach
             </div>
 
             <div class="flex items-center gap-4 my-4">
@@ -107,7 +107,7 @@
                         </svg>
                     </button>
 
-                    <span class="font-medium select-none">{{ $question['upvotes'] }}</span>
+                    <span class="font-medium select-none">{{ $question->upvotes }}</span>
 
                     <button id="downvote"
                         class="dark:bg-[#333333] bg-gray-300 w-10 h-10 rounded-full dark:hover:bg-neutral-700 hover:bg-gray-400 flex items-center justify-center duration-300 cursor-pointer">
@@ -127,7 +127,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 0 1-.923 1.785A5.969 5.969 0 0 0 6 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337Z" />
                     </svg>
-                    <span class="font-medium select-none">11</span>
+                    <span class="font-medium select-none">{{ $question->answers }}</span>
                 </div>
 
                 <div class="relative">
@@ -160,17 +160,18 @@
             </div>
 
             <div class="w-full my-6">
-                <form action="" method="post"
+                <form action="{{ route('responses.create') }}" method="post"
                     class="w-full border dark:border-neutral-600 border-neutral-400 rounded-3xl">
-                    <input type="hidden" name="parent" class="hidden" value="{{ $question['id'] }}">
                     @csrf
-                    <textarea name="response-input" id="response-input" placeholder="Response the question"
+                    <input type="hidden" name="question_id" class="hidden" value="{{ $question->id }}">
+                    <textarea name="body" id="response-input" placeholder="Response the question"
                         class="px-4 py-2.5 w-full min-h-12 h-12 text-lg outline-none rounded-3xl"></textarea>
                     <div id="response-block"
                         class="hidden w-full flex items-center justify-between px-4 py-1 rounded-3xl">
                         <div class="flex items-center gap-4">
                             <div>
                                 <input type="file" name="file" id="file" class="hidden">
+
                                 <label for="file"
                                     class="w-10 h-10 flex items-center justify-center rounded-full dark:text-neutral-200 dark:hover:text-neutral-100 cursor-pointer dark:hover:bg-neutral-700 hover:bg-gray-300 duration-300">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -190,6 +191,9 @@
                         </div>
                     </div>
                 </form>
+                @error('body')
+                    <span class="text-medium text-red-500">{{ $message }}</span>
+                @enderror
             </div>
 
             <div class="flex items-center gap-4">
@@ -203,224 +207,222 @@
 
             <div class="my-8 w-full space-y-10">
                 {{-- comments --}}
-
-                <div class="flex flex-col gap-4 w-full">
-                    <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 bg-gray-300 rounded-full">
+                @foreach ($question->responses as $responses)
+                    <div class="flex flex-col gap-4 w-full">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 bg-gray-300 rounded-full">
+                            </div>
+                            <span class="font-medium">{{ $responses->user->username }}</span>
+                            &bull;
+                            <span class="text-gray-500 text-sm">{{ $responses->date }}</span>
                         </div>
-                        <span class="font-medium">{{ $question['author'] }}</span>
-                        &bull;
-                        <span class="text-gray-500 text-sm">{{ $question['date'] }}</span>
-                    </div>
 
-                    <p class="text-neutral-400 font-medium">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut,
-                        velit
-                        quibusdam minima sunt repellendus ab ea architecto, impedit amet, doloribus ad delectus iusto saepe
-                        quasi odio dicta soluta ex? Quo.
-                        Voluptatibus sunt, libero aperiam hic ipsa molestiae quae ducimus asperiores minus maxime, earum
-                        accusantium corrupti at quidem deleniti porro eveniet odit quas repudiandae omnis. Id vitae fugit
-                        sint repellendus itaque!
-                    </p>
+                        <p class="text-neutral-400 font-medium">
+                            {{ $responses->body }}
+                        </p>
 
-                    @if (isset($question['image']))
-                        <div class="my-2">
-                            <img src="{{ $question['image'] }}" alt="img" class="h-50 object-contain">
-                        </div>
-                    @endif
+                        @if (isset($responses->image))
+                            <div class="my-2">
+                                <img src="{{ $responses->image }}" alt="img" class="h-50 object-contain">
+                            </div>
+                        @endif
 
-                    <div class="flex items-center gap-2">
                         <div class="flex items-center gap-2">
+                            <div class="flex items-center gap-2">
 
-                            <button
-                                class="res-upvote w-10 h-10 rounded-full dark:hover:bg-neutral-700 hover:bg-gray-400 flex items-center justify-center duration-300 cursor-pointer">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    fill="currentColor" viewBox="0 0 256 256">
-                                    <path
-                                        d="M229.66,114.34l-96-96a8,8,0,0,0-11.32,0l-96,96A8,8,0,0,0,32,128H72v80a16,16,0,0,0,16,16h80a16,16,0,0,0,16-16V128h40a8,8,0,0,0,5.66-13.66ZM176,112a8,8,0,0,0-8,8v88H88V120a8,8,0,0,0-8-8H51.31L128,35.31,204.69,112Z">
-                                    </path>
+                                <button
+                                    class="res-upvote w-10 h-10 rounded-full dark:hover:bg-neutral-700 hover:bg-gray-400 flex items-center justify-center duration-300 cursor-pointer">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        fill="currentColor" viewBox="0 0 256 256">
+                                        <path
+                                            d="M229.66,114.34l-96-96a8,8,0,0,0-11.32,0l-96,96A8,8,0,0,0,32,128H72v80a16,16,0,0,0,16,16h80a16,16,0,0,0,16-16V128h40a8,8,0,0,0,5.66-13.66ZM176,112a8,8,0,0,0-8,8v88H88V120a8,8,0,0,0-8-8H51.31L128,35.31,204.69,112Z">
+                                        </path>
+                                    </svg>
+                                </button>
+
+                                <span
+                                    class="font-semibold text-gray-500 dark:text-gray-400">{{ $responses->upvotes }}</span>
+
+                            </div>
+
+
+                            <div class="flex items-center gap-1">
+                                <button
+                                    class="res-downvote w-10 h-10 rounded-full dark:hover:bg-neutral-700 hover:bg-gray-400 flex items-center justify-center duration-300 cursor-pointer">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        fill="currentColor" viewBox="0 0 256 256">
+                                        <path
+                                            d="M231.39,132.94A8,8,0,0,0,224,128H184V48a16,16,0,0,0-16-16H88A16,16,0,0,0,72,48v80H32a8,8,0,0,0-5.66,13.66l96,96a8,8,0,0,0,11.32,0l96-96A8,8,0,0,0,231.39,132.94ZM128,220.69,51.31,144H80a8,8,0,0,0,8-8V48h80v88a8,8,0,0,0,8,8h28.69Z">
+                                        </path>
+                                    </svg>
+                                </button>
+
+                                <span
+                                    class="font-semibold text-gray-500 dark:text-gray-400">{{ $responses->downvotes }}</span>
+                            </div>
+
+                            <div
+                                class="reply-btn flex items-center justify-center gap-2 rounded-full px-3 h-10 cursor-pointer dark:hover:bg-neutral-700 hover:bg-gray-400 duration-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 0 1-.923 1.785A5.969 5.969 0 0 0 6 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337Z" />
                                 </svg>
-                            </button>
-
-                            <span class="font-semibold text-gray-500 dark:text-gray-400">120</span>
+                                <span class="font-medium select-none text-neutral-700 dark:text-neutral-300">Reply</span>
+                            </div>
 
                         </div>
 
+                        <form action="{{ route('responses.create') }}" method="post"
+                            class="form-comment w-full border dark:border-neutral-600 border-neutral-400 rounded-3xl hidden">
+                            <textarea name="body" id="body" placeholder="Response the question"
+                                class="response-input px-4 py-2.5 w-full min-h-12 h-12 text-lg outline-none rounded-3xl"></textarea>
+                            <input type="hidden" name="question_id" class="hidden" value="{{ $question->id }}">
+                            <input type="hidden" name="parent_id" class="hidden" value="{{ $responses->id }}">
+                            @csrf
+                            <div
+                                class="response-block hidden w-full flex items-center justify-between px-4 py-1 rounded-3xl">
+                                <div class="flex items-center gap-4">
+                                    <div>
+                                        <input type="file" name="file" id="file" class="hidden">
+                                        <label for="file"
+                                            class="w-10 h-10 flex items-center justify-center rounded-full dark:text-neutral-200 dark:hover:text-neutral-100 cursor-pointer dark:hover:bg-neutral-700 hover:bg-gray-300 duration-300">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" class="size-5">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                                            </svg>
+                                        </label>
+                                    </div>
+                                </div>
 
-                        <div class="flex items-center gap-1">
-                            <button
-                                class="res-downvote w-10 h-10 rounded-full dark:hover:bg-neutral-700 hover:bg-gray-400 flex items-center justify-center duration-300 cursor-pointer">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    fill="currentColor" viewBox="0 0 256 256">
-                                    <path
-                                        d="M231.39,132.94A8,8,0,0,0,224,128H184V48a16,16,0,0,0-16-16H88A16,16,0,0,0,72,48v80H32a8,8,0,0,0-5.66,13.66l96,96a8,8,0,0,0,11.32,0l96-96A8,8,0,0,0,231.39,132.94ZM128,220.69,51.31,144H80a8,8,0,0,0,8-8V48h80v88a8,8,0,0,0,8,8h28.69Z">
-                                    </path>
-                                </svg>
-                            </button>
-
-                            <span class="font-semibold text-gray-500 dark:text-gray-400">5</span>
-                        </div>
-
-                        <div
-                            class="reply-btn flex items-center justify-center gap-2 rounded-full px-3 h-10 cursor-pointer dark:hover:bg-neutral-700 hover:bg-gray-400 duration-300">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke-width="1.5" stroke="currentColor" class="size-6">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 0 1-.923 1.785A5.969 5.969 0 0 0 6 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337Z" />
-                            </svg>
-                            <span class="font-medium select-none text-neutral-700 dark:text-neutral-300">Reply</span>
-                        </div>
-
+                                <div class="flex items-center gap-4">
+                                    <button type="reset"
+                                        class="reset-btn font-semibold py-1.5 px-4 rounded-full dark:bg-neutral-700 bg-neutral-300 hover:bg-neutral-500 dark:hover:bg-neutral-800 duration-300 cursor-pointer">Cancel</button>
+                                    <button type="submit"
+                                        class="py-1.5 px-4 rounded-full dark:bg-yellow-600 bg-blue-500 dark:hover:bg-yellow-700 hover:bg-blue-700 duration-300 font-semibold cursor-pointer">Submit</button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
+                    {{--  --}}
+                    @foreach ($responses->children as $comment)
+                        <div class="flex flex-col gap-4 w-full pl-15">
+                            <div class="relative flex items-center gap-4">
+                                <div class="w-10 h-10 bg-gray-300 rounded-full">
+                                </div>
+                                <span class="font-medium">{{ $comment->user->username }}</span>
+                                &bull;
+                                <span class="text-gray-500 text-sm">{{ $comment->date }}</span>
 
-                    <form action="" method="post"
-                        class="form-comment w-full border dark:border-neutral-600 border-neutral-400 rounded-3xl hidden">
-                        <textarea name="response-input" id="response-input" placeholder="Response the question"
-                            class="response-input px-4 py-2.5 w-full min-h-12 h-12 text-lg outline-none rounded-3xl"></textarea>
-                        <input type="hidden" name="parent" class="hidden" value="{{ $question['id'] }}">
-                        @csrf
-                        <div class="response-block hidden w-full flex items-center justify-between px-4 py-1 rounded-3xl">
-                            <div class="flex items-center gap-4">
-                                <div>
-                                    <input type="file" name="file" id="file" class="hidden">
-                                    <label for="file"
-                                        class="w-10 h-10 flex items-center justify-center rounded-full dark:text-neutral-200 dark:hover:text-neutral-100 cursor-pointer dark:hover:bg-neutral-700 hover:bg-gray-300 duration-300">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="size-5">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                                        </svg>
-                                    </label>
+
+                                <div
+                                    class="absolute top-0 -left-2 text-gray-400 -translate-x-full w-10 h-10 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="size-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="m16.49 12 3.75 3.75m0 0-3.75 3.75m3.75-3.75H3.74V4.499" />
+                                    </svg>
                                 </div>
                             </div>
 
-                            <div class="flex items-center gap-4">
-                                <button type="reset"
-                                    class="reset-btn font-semibold py-1.5 px-4 rounded-full dark:bg-neutral-700 bg-neutral-300 hover:bg-neutral-500 dark:hover:bg-neutral-800 duration-300 cursor-pointer">Cancel</button>
-                                <button type="submit"
-                                    class="py-1.5 px-4 rounded-full dark:bg-yellow-600 bg-blue-500 dark:hover:bg-yellow-700 hover:bg-blue-700 duration-300 font-semibold cursor-pointer">Submit</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                            <p class="text-neutral-400 font-medium">
+                                {{ $comment->body }}
+                            </p>
 
-                {{--  --}}
-
-                <div class="flex flex-col gap-4 w-full pl-15">
-                    <div class="relative flex items-center gap-4">
-                        <div class="w-10 h-10 bg-gray-300 rounded-full">
-                        </div>
-                        <span class="font-medium">{{ $question['author'] }}</span>
-                        &bull;
-                        <span class="text-gray-500 text-sm">{{ $question['date'] }}</span>
-
-
-                        <div
-                            class="absolute top-0 -left-2 text-gray-400 -translate-x-full w-10 h-10 flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke-width="1.5" stroke="currentColor" class="size-6">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="m16.49 12 3.75 3.75m0 0-3.75 3.75m3.75-3.75H3.74V4.499" />
-                            </svg>
-                        </div>
-                    </div>
-
-                    <p class="text-neutral-400 font-medium">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut,
-                        velit
-                        quibusdam minima sunt repellendus ab ea architecto, impedit amet, doloribus ad delectus iusto saepe
-                        quasi odio dicta soluta ex? Quo.
-                        Voluptatibus sunt, libero aperiam hic ipsa molestiae quae ducimus asperiores minus maxime, earum
-                        accusantium corrupti at quidem deleniti porro eveniet odit quas repudiandae omnis. Id vitae fugit
-                        sint repellendus itaque!
-                    </p>
-
-                    @if (isset($question['image']))
-                        <div class="my-2">
-                            <img src="{{ $question['image'] }}" alt="img" class="h-50 object-contain">
-                        </div>
-                    @endif
-
-                    <div class="flex items-center gap-2">
-                        <div class="flex items-center gap-2">
-
-                            <button
-                                class="res-upvote w-10 h-10 rounded-full dark:hover:bg-neutral-700 hover:bg-gray-400 flex items-center justify-center duration-300 cursor-pointer">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    fill="currentColor" viewBox="0 0 256 256">
-                                    <path
-                                        d="M229.66,114.34l-96-96a8,8,0,0,0-11.32,0l-96,96A8,8,0,0,0,32,128H72v80a16,16,0,0,0,16,16h80a16,16,0,0,0,16-16V128h40a8,8,0,0,0,5.66-13.66ZM176,112a8,8,0,0,0-8,8v88H88V120a8,8,0,0,0-8-8H51.31L128,35.31,204.69,112Z">
-                                    </path>
-                                </svg>
-                            </button>
-
-                            <span class="font-semibold text-gray-500 dark:text-gray-400">120</span>
-
-                        </div>
-
-
-                        <div class="flex items-center gap-1">
-                            <button
-                                class="res-downvote w-10 h-10 rounded-full dark:hover:bg-neutral-700 hover:bg-gray-400 flex items-center justify-center duration-300 cursor-pointer">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    fill="currentColor" viewBox="0 0 256 256">
-                                    <path
-                                        d="M231.39,132.94A8,8,0,0,0,224,128H184V48a16,16,0,0,0-16-16H88A16,16,0,0,0,72,48v80H32a8,8,0,0,0-5.66,13.66l96,96a8,8,0,0,0,11.32,0l96-96A8,8,0,0,0,231.39,132.94ZM128,220.69,51.31,144H80a8,8,0,0,0,8-8V48h80v88a8,8,0,0,0,8,8h28.69Z">
-                                    </path>
-                                </svg>
-                            </button>
-
-                            <span class="font-semibold text-gray-500 dark:text-gray-400">5</span>
-                        </div>
-
-                        <div
-                            class="reply-btn flex items-center justify-center gap-2 rounded-full px-3 h-10 cursor-pointer dark:hover:bg-neutral-700 hover:bg-gray-400 duration-300">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke-width="1.5" stroke="currentColor" class="size-6">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 0 1-.923 1.785A5.969 5.969 0 0 0 6 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337Z" />
-                            </svg>
-                            <span class="font-medium select-none text-neutral-700 dark:text-neutral-300">Reply</span>
-                        </div>
-
-                    </div>
-
-                    <form action="" method="post"
-                        class="form-comment w-full border dark:border-neutral-600 border-neutral-400 rounded-3xl hidden">
-                        <textarea name="response-input" id="response-input" placeholder="Response the question"
-                            class="response-input px-4 py-2.5 w-full min-h-12 h-12 text-lg outline-none rounded-3xl"></textarea>
-                        <input type="hidden" name="parent" class="hidden" value="{{ $question['id'] }}">
-                        @csrf
-                        <div class="response-block hidden w-full flex items-center justify-between px-4 py-1 rounded-3xl">
-                            <div class="flex items-center gap-4">
-                                <div>
-                                    <input type="file" name="file" id="file" class="hidden">
-                                    <label for="file"
-                                        class="w-10 h-10 flex items-center justify-center rounded-full dark:text-neutral-200 dark:hover:text-neutral-100 cursor-pointer dark:hover:bg-neutral-700 hover:bg-gray-300 duration-300">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="size-5">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                                        </svg>
-                                    </label>
+                            @if (isset($comment->image))
+                                <div class="my-2">
+                                    <img src="{{ $comment->image }}" alt="img" class="h-50 object-contain">
                                 </div>
+                            @endif
+
+                            <div class="flex items-center gap-2">
+                                <div class="flex items-center gap-2">
+
+                                    <button
+                                        class="res-upvote w-10 h-10 rounded-full dark:hover:bg-neutral-700 hover:bg-gray-400 flex items-center justify-center duration-300 cursor-pointer">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            fill="currentColor" viewBox="0 0 256 256">
+                                            <path
+                                                d="M229.66,114.34l-96-96a8,8,0,0,0-11.32,0l-96,96A8,8,0,0,0,32,128H72v80a16,16,0,0,0,16,16h80a16,16,0,0,0,16-16V128h40a8,8,0,0,0,5.66-13.66ZM176,112a8,8,0,0,0-8,8v88H88V120a8,8,0,0,0-8-8H51.31L128,35.31,204.69,112Z">
+                                            </path>
+                                        </svg>
+                                    </button>
+
+                                    <span
+                                        class="font-semibold text-gray-500 dark:text-gray-400">{{ $comment->upvotes }}</span>
+
+                                </div>
+
+
+                                <div class="flex items-center gap-1">
+                                    <button
+                                        class="res-downvote w-10 h-10 rounded-full dark:hover:bg-neutral-700 hover:bg-gray-400 flex items-center justify-center duration-300 cursor-pointer">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            fill="currentColor" viewBox="0 0 256 256">
+                                            <path
+                                                d="M231.39,132.94A8,8,0,0,0,224,128H184V48a16,16,0,0,0-16-16H88A16,16,0,0,0,72,48v80H32a8,8,0,0,0-5.66,13.66l96,96a8,8,0,0,0,11.32,0l96-96A8,8,0,0,0,231.39,132.94ZM128,220.69,51.31,144H80a8,8,0,0,0,8-8V48h80v88a8,8,0,0,0,8,8h28.69Z">
+                                            </path>
+                                        </svg>
+                                    </button>
+
+                                    <span
+                                        class="font-semibold text-gray-500 dark:text-gray-400">{{ $comment->downvotes }}</span>
+                                </div>
+
+                                <div
+                                    class="hidden reply-btn flex items-center justify-center gap-2 rounded-full px-3 h-10 cursor-pointer dark:hover:bg-neutral-700 hover:bg-gray-400 duration-300">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="size-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 0 1-.923 1.785A5.969 5.969 0 0 0 6 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337Z" />
+                                    </svg>
+                                    <span
+                                        class="font-medium select-none text-neutral-700 dark:text-neutral-300">Reply</span>
+                                </div>
+
                             </div>
 
-                            <div class="flex items-center gap-4">
-                                <button type="reset"
-                                    class="reset-btn font-semibold py-1.5 px-4 rounded-full dark:bg-neutral-700 bg-neutral-300 hover:bg-neutral-500 dark:hover:bg-neutral-800 duration-300 cursor-pointer">Cancel</button>
-                                <button type="submit"
-                                    class="py-1.5 px-4 rounded-full dark:bg-yellow-600 bg-blue-500 dark:hover:bg-yellow-700 hover:bg-blue-700 duration-300 font-semibold cursor-pointer">Submit</button>
-                            </div>
+                            <form action="{{ route('responses.create') }}" method="post"
+                                class="form-comment w-full border dark:border-neutral-600 border-neutral-400 rounded-3xl hidden">
+                                <textarea name="body" id="response-input" placeholder="Response the question"
+                                    class="response-input px-4 py-2.5 w-full min-h-12 h-12 text-lg outline-none rounded-3xl"></textarea>
+                                <input type="hidden" name="parent_id" class="hidden" value="{{ $comment->id }}">
+                                <input type="hidden" name="question_id" class="hidden" value="{{ $question->id }}">
+                                @csrf
+                                <div
+                                    class="response-block hidden w-full flex items-center justify-between px-4 py-1 rounded-3xl">
+                                    <div class="flex items-center gap-4">
+                                        <div>
+                                            <input type="file" name="file" id="file" class="hidden">
+                                            <label for="file"
+                                                class="w-10 h-10 flex items-center justify-center rounded-full dark:text-neutral-200 dark:hover:text-neutral-100 cursor-pointer dark:hover:bg-neutral-700 hover:bg-gray-300 duration-300">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                    class="size-5">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                                                </svg>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center gap-4">
+                                        <button type="reset"
+                                            class="reset-btn font-semibold py-1.5 px-4 rounded-full dark:bg-neutral-700 bg-neutral-300 hover:bg-neutral-500 dark:hover:bg-neutral-800 duration-300 cursor-pointer">Cancel</button>
+                                        <button type="submit"
+                                            class="py-1.5 px-4 rounded-full dark:bg-yellow-600 bg-blue-500 dark:hover:bg-yellow-700 hover:bg-blue-700 duration-300 font-semibold cursor-pointer">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                    </form>
-                </div>
-                {{--  --}}
+                    @endforeach
+                @endforeach
 
             </div>
 
         </div>
 
-        <x-aside-card :question="$question" />
+        <x-aside-card :question="$question" :questionsQty="$questionsQty" />
     </section>
 @endsection
