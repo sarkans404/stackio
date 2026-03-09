@@ -17,12 +17,12 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            
+
             $table->string('avatar')->nullable();
             $table->string('reputation')->default(0);
             $table->enum('role', ['customer', 'admin'])->default('customer');
-            $table->string('bio');
-            
+            $table->string('bio')->nullable();
+
             $table->rememberToken();
             $table->timestamps();
         });
