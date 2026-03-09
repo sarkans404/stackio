@@ -1,5 +1,5 @@
 <div>
-    <x-activity-card />
+    <x-activity-card :questionsQty="$questionsQty" />
 
     <x-popular-tags-card />
 
