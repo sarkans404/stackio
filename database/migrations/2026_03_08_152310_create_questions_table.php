@@ -18,7 +18,7 @@ return new class extends Migration
                 ->cascadeOnDelete();
 
             $table->string('title');
-            $table->text('body');
+            $table->text('body')->nullable();
             $table->date('date')->default(now());
             $table->integer('views')->default(0);
             $table->integer('upvotes')->default(0);
