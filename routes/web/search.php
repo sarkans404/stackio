@@ -1,3 +1,7 @@
 <?php
 
-Route::get('/search', [HomeController::class, 'search'])->name('search');
+use App\Http\Controllers\SearchController;
+
+Route::controller(SearchController::class)->group(function () {
+    Route::get('/search', 'search')->name('search');
+});
