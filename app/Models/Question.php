@@ -32,4 +32,14 @@ class Question extends Model
     {
         return $this->hasMany(QuestionImages::class);
     }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tags::class, 'question_tags', 'question_id', 'tag_id');
+    }
+
+    public function question_tags()
+    {
+        return $this->hasMany(QuestionTag::class);
+    }
 }
