@@ -9,7 +9,7 @@
             @csrf
             <div class="mb-8">
                 <div class="relative">
-                    <input type="text" name="title" id="title" placeholder=" "
+                    <input type="text" name="title" id="title" placeholder=" " value="{{ old('title') }}"
                         class="border text-lg px-5 pt-5 pb-3 dark:border-neutral-600 focus:border-neutral-300 dark:focus:border-neutral-500 duration-300 border-neutral-400 w-full rounded-2xl outline-none">
                     <label for="title"
                         class="label-animation dark:text-neutral-500 absolute top-1/2 -translate-y-1/2 left-5 select-none cursor-text touch-none text-lg duration-300">Title<span
@@ -21,15 +21,25 @@
             </div>
 
             <textarea name="text" id="text" placeholder="Place here detalies(optional)"
-                class="mb-8 border min-h-30 p-4 dark:border-neutral-600 focus:border-neutral-300 dark:focus:border-neutral-500 border-neutral-400 w-full rounded-2xl outline-none"></textarea>
+                class="mb-8 border min-h-30 p-4 dark:border-neutral-600 focus:border-neutral-300 dark:focus:border-neutral-500 border-neutral-400 w-full rounded-2xl outline-none">{{ old('text') }}</textarea>
             @error('text')
                 <span class="font-medium text-red-500">{{ $message }}</span>
             @enderror
-            <input type="text" name="tag" id="tag" placeholder="Add tags"
+
+            <input list="tags" type="text" name="tag" id="tag" placeholder="Add tags"
+                value="{{ old('tag') }}"
                 class="mb-4 border p-4 dark:border-neutral-600 focus:border-neutral-300 dark:focus:border-neutral-500 duration-300 border-neutral-400 w-full rounded-2xl outline-none">
+            @if ($tags)
+                <datalist id="tags" placeholder="e.g. js, html">
+                    @foreach ($tags as $tag)
+                        <option value="{{ $tag->slug }}">{{ $tag->name }}</option>
+                    @endforeach
+                </datalist>
+            @endif
             @error('tag')
                 <span class="font-medium text-red-500">{{ $message }}</span>
             @enderror
+
             <div class="flex item-start justify-between">
                 <div>
                     <input type="file" name="img" id="img" class="hidden">
