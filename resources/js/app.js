@@ -7,6 +7,8 @@ import initMenus from "./modules/menus";
 import initComments from "./modules/comments";
 import initClipboard from "./modules/clipboard";
 import initBackButton from "./modules/backButton";
+import initEditResponses from "./modules/editResponses";
+import initVote from "./ajax/vote";
 
 document.addEventListener("DOMContentLoaded", () => {
     initTheme();
@@ -16,4 +18,6 @@ document.addEventListener("DOMContentLoaded", () => {
     initMenus();
     initComments();
     initClipboard();
+    initEditResponses();
+    initVote();
 });
