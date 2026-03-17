@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class QuestionTagSeeder extends Seeder
 {
@@ -12,6 +12,19 @@ class QuestionTagSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        DB::table('question_tags')->insert([
+            [
+                'question_id' => 1,
+                'tag_id' => 1,
+            ],
+            [
+                'question_id' => 1,
+                'tag_id' => 2,
+            ],
+            [
+                'question_id' => 1,
+                'tag_id' => 3,
+            ],
+        ]);
     }
 }
