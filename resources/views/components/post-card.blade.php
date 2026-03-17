@@ -8,7 +8,7 @@
             </div>
             <span class="font-medium text-neutral-700 dark:text-gray-300">{{ $question->user->username }}</span>
             &bull;
-            <span class="text-neutral-500 dark:text-gray-400">{{ $question->updated_at->diffForHumans() }}</span>
+            <span class="text-neutral-500 dark:text-gray-400">{{ $question->created_at->diffForHumans() }}</span>
         </div>
 
         <div class="relative">
@@ -72,24 +72,22 @@
                     Report
                 </button>
                 @if (Auth::id() === $question->user->id)
-                    <form action="{{ route('question.edit.show') }}" method="post">
-                        @csrf
-                        <input type="hidden" name="question_id" value="{{ $question->id }}" class="hidden">
-                        <button type="submit"
-                            class="w-full flex items-center gap-4 px-4 py-2 cursor-pointer bg-[#f8f8f8] dark:bg-[#101314] hover:bg-gray-200 dark:hover:bg-[#313232] duration-300">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke-width="1.5" stroke="currentColor" class="size-6">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
-                            </svg>
-                            Edit
-                        </button>
-                    </form>
+                    <a href="{{ route('question.edit.show', $question->id) }}" type="submit"
+                        class="w-full flex items-center gap-4 px-4 py-2 cursor-pointer bg-[#f8f8f8] dark:bg-[#101314] hover:bg-gray-200 dark:hover:bg-[#313232] duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                        </svg>
+                        Edit
+                    </a>
                 @endif
                 @if (Auth::id() === $question->user->id || auth()->user()?->role === 'admin')
                     <form action="{{ route('question.delete') }}" method="post">
                         @csrf
-                        <input type="hidden" name="question_id" value="{{ $question->id }}" class="hidden">
+                        @method('DELETE')
+                        <input type="hidden" name="question_id" id="question_id" value="{{ $question->id }}"
+                            class="hidden">
                         <button type="submit"
                             class="w-full flex items-center gap-4 px-4 py-2 cursor-pointer bg-[#f8f8f8] dark:bg-[#101314] hover:bg-gray-200 dark:hover:bg-[#313232] duration-300">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
