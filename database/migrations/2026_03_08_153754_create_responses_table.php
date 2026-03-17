@@ -26,10 +26,10 @@ return new class extends Migration
                 ->cascadeOnDelete();
 
             $table->text('body');
-            $table->boolean('is_accepted')->default(true);
-            $table->boolean('is_correct')->default(false);
+            $table->boolean('is_accepted')->default(false);
+            $table->boolean('is_banned')->default(false);
+            $table->boolean('is_edited')->default(false);
             $table->string('image')->nullable();
-            $table->date('date')->default(now());
 
             $table->integer('upvotes')->default(0);
             $table->integer('downvotes')->default(0);
