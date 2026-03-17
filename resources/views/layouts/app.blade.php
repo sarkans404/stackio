@@ -20,6 +20,8 @@
     <main class="min-h-[90vh] w-full bg-[#f8f8f8] dark:bg-[#0a0b0b] pt-20 px-4">
         @yield('content')
     </main>
+    <div id="notice" class="fixed right-5 bottom-5 flex flex-col gap-2">
+    </div>
 
     @include('partials.footer')
 </body>
