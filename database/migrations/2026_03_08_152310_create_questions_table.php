@@ -19,7 +19,6 @@ return new class extends Migration
 
             $table->string('title');
             $table->text('body')->nullable();
-            $table->date('date')->default(now());
             $table->integer('views')->default(0);
             $table->integer('upvotes')->default(0);
             $table->integer('downvotes')->default(0);
