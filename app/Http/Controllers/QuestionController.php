@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Question;
 use App\Models\QuestionTag;
-use App\Models\Responses;
 use App\Models\Tags;
+use App\Models\Votes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,7 +23,24 @@ class QuestionController extends Controller
         ])->findOrFail($id);
         $questionsQty = Question::count();
 
-        return view('question', compact('question', 'questionsQty'));
+        $userVotes = [];
+        $userVotesRes = [];
+
+        if (Auth::check()) {
+            $userVotes = Votes::where('user_id', Auth::id())
+                ->where('votable_type', 'question')
+                ->pluck('type', 'votable_id')
+                ->toArray();
+        }
+
+        if (Auth::check()) {
+            $userVotesRes = Votes::where('user_id', Auth::id())
+                ->where('votable_type', 'response')
+                ->pluck('type', 'votable_id')
+                ->toArray();
+        }
+
+        return view('question', compact('question', 'userVotes', 'userVotesRes', 'questionsQty'));
     }
 
     public function createShow()
