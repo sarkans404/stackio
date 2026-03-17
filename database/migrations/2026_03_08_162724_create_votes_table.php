@@ -19,8 +19,8 @@ return new class extends Migration
                 ->cascadeOnDelete();
 
             $table->morphs('votable');
-            $table->tinyInteger('value');
-            
+            $table->string('type');
+
             $table->timestamps();
         });
     }
