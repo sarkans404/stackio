@@ -19,7 +19,8 @@
                         <span
                             class="font-medium text-neutral-700 dark:text-gray-300 leading-4">{{ $question->user->username }}</span>
                         <div class="flex gap-2 items-center">
-                            <span class="text-neutral-500 dark:text-gray-400">{{ $question->date }}</span>
+                            <span
+                                class="text-neutral-500 dark:text-gray-400">{{ $question->created_at->format('d.m.Y') }}</span>
                             &bull;
                             <span
                                 class="text-neutral-500 dark:text-gray-400">{{ $question->updated_at->diffForHumans() }}</span>
@@ -87,6 +88,34 @@
 
                             Report
                         </button>
+                        @if (Auth::id() === $question->user->id)
+                            <a href="{{ route('question.edit.show', $question->id) }}" type="submit"
+                                class="w-full flex items-center gap-4 px-4 py-2 cursor-pointer bg-[#f8f8f8] dark:bg-[#101314] hover:bg-gray-200 dark:hover:bg-[#313232] duration-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                                </svg>
+                                Edit
+                            </a>
+                        @endif
+                        @if (Auth::id() === $question->user->id || auth()->user()?->role === 'admin')
+                            <form action="{{ route('question.delete') }}" method="post">
+                                @csrf
+                                @method('DELETE')
+                                <input type="hidden" name="question_id" id="question_id" value="{{ $question->id }}"
+                                    class="hidden">
+                                <button type="submit"
+                                    class="w-full flex items-center gap-4 px-4 py-2 cursor-pointer bg-[#f8f8f8] dark:bg-[#101314] hover:bg-gray-200 dark:hover:bg-[#313232] duration-300">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="size-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                    </svg>
+                                    Delete
+                                </button>
+                            </form>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -170,14 +199,16 @@
                     </div>
                 </div>
 
-                @foreach ($question->tags as $tag)
+                @if ($question->tags)
                     <div class="flex items-center gap-2">
-                        <div class="flex items-center gap-1 flex-wrap">
-                            <span
-                                class="text-white bg-gray-500 dark:bg-gray-700 px-3 py-1 rounded">{{ $tag->name }}</span>
-                        </div>
+                        @foreach ($question->tags as $tag)
+                            <div class="flex items-center gap-1 flex-wrap">
+                                <span
+                                    class="text-white bg-gray-500 dark:bg-gray-700 px-3 py-1 rounded">{{ $tag->name }}</span>
+                            </div>
+                        @endforeach
                     </div>
-                @endforeach
+                @endif
             </div>
 
             <div class="w-full my-6">
@@ -275,14 +306,21 @@
                             </div>
                             <span class="font-medium">{{ $responses->user->username }}</span>
                             &bull;
-                            <span class="text-gray-500 text-sm">{{ $responses->date }}</span>
+                            <span class="text-gray-500 text-sm">{{ $responses->updated_at->diffForHumans() }}</span>
+                            @if ($responses->is_edited)
+                                &bull;
+                                <span class="text-gray-500 text-sm">Edited</span>
+                            @endif
 
-                            @if ($responses->user_id == Auth::id())
+                            @if ($responses->user_id === $question->user->id)
                                 <span
                                     class="text-sm bg-gray-300 dark:bg-neutral-500 px-3 py-0.5 rounded-full">Author</span>
                             @endif
                             @if ($responses->user->role === 'admin')
                                 <span class="text-sm bg-blue-500 dark:bg-yellow-600 px-3 py-0.5 rounded-full">Admin</span>
+                            @endif
+                            @if ($responses->is_accepted)
+                                <span class="text-sm bg-emerald-600 px-3 py-0.5 rounded-full">Accepted</span>
                             @endif
 
                         </div>
@@ -458,11 +496,13 @@
                                 </div>
                                 <span class="font-medium">{{ $comment->user->username }}</span>
                                 &bull;
-                                <span class="text-gray-500 text-sm">{{ $comment->date }}</span>
-                                @if ($comment->user_id == Auth::id())
+                                <span class="text-gray-500 text-sm">{{ $comment->updated_at->diffForHumans() }}</span>
+
+                                @if ($comment->user_id === $question->user->id)
                                     <span
                                         class="text-sm bg-gray-300 dark:bg-neutral-500 px-3 py-0.5 rounded-full">Author</span>
                                 @endif
+
                                 @if ($comment->user->role === 'admin')
                                     <span
                                         class="text-sm bg-blue-500 dark:bg-yellow-600 px-3 py-0.5 rounded-full">Admin</span>
@@ -616,6 +656,7 @@
 
         </div>
 
-        <x-aside-card :question="$question" :questionsQty="$questionsQty" />
+        <x-aside-card :question="$question" :questionsQty="$questionsQty" :popularTags="$popularTags" :answersQty="$answersQty" :commentQty="$commentQty"
+            :userQty="$userQty" />
     </section>
 @endsection
