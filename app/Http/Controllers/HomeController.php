@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Question;
-use Illuminate\Http\Request;
+use App\Models\Votes;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -14,7 +15,16 @@ class HomeController extends Controller
 
         $questionsQty = Question::count();
 
-        return view('home', compact('questions', 'questionsQty'));
+        $userVotes = [];
+
+        if (Auth::check()) {
+            $userVotes = Votes::where('user_id', Auth::id())
+                ->where('votable_type', 'question')
+                ->pluck('type', 'votable_id')
+                ->toArray();
+        }
+
+        return view('home', compact('questions', 'userVotes', 'questionsQty'));
     }
 
     public function popular()
@@ -26,7 +36,16 @@ class HomeController extends Controller
 
         $questionsQty = Question::count();
 
-        return view('home', compact('questions', 'questionsQty'));
+        $userVotes = [];
+
+        if (Auth::check()) {
+            $userVotes = Votes::where('user_id', Auth::id())
+                ->where('votable_type', 'question')
+                ->pluck('type', 'votable_id')
+                ->toArray();
+        }
+
+        return view('popular', compact('questions', 'userVotes', 'questionsQty'));
     }
 
     public function new()
@@ -37,41 +56,16 @@ class HomeController extends Controller
 
         $questionsQty = Question::count();
 
-        return view('home', compact('questions', 'questionsQty'));
-    }
+        $userVotes = [];
 
-    public function show($id)
-    {
-        return view('question', ['question' => [
-            'id' => $id,
-            'title' => 'How to implement a binary search algorithm in Python?',
-            'author' => 'John Doe',
-            'date' => '2023-10-01',
-            'content' => 'I am trying to implement a binary search algorithm in Python, but I am having trouble understanding how to handle edge cases. Can someone provide an example implementation?',
-            'upvotes' => 15,
-            'answers' => 3,
-            'views' => 120,
-            'image' => 'https://picsum.photos/id/237/200/300',
-        ]]);
-    }
+        if (Auth::check()) {
+            $userVotes = Votes::where('user_id', Auth::id())
+                ->where('votable_type', 'question')
+                ->pluck('type', 'votable_id')
+                ->toArray();
+        }
 
-    public function search(Request $request)
-    {
-        return view('search', [
-            'questions' => [
-                0 => [
-                    'id' => 99,
-                    'title' => 'How to implement a binary search algorithm in Python?',
-                    'author' => 'John Doe',
-                    'date' => '2023-10-01',
-                    'content' => 'I am trying to implement a binary search algorithm in Python, but I am having trouble understanding how to handle edge cases. Can someone provide an example implementation?',
-                    'upvotes' => 15,
-                    'answers' => 3,
-                    'views' => 120,
-                    'image' => 'https://picsum.photos/id/237/200/300',
-                ],
-            ],
-        ]);
+        return view('new', compact('questions', 'userVotes', 'questionsQty'));
     }
 
     public function notificationShow()
