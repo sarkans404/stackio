@@ -32,4 +32,9 @@ class Responses extends Model
     {
         return $this->hasMany(Responses::class, 'parent_id');
     }
+
+    public function scopeNotBanned($query)
+    {
+        return $query->where('is_banned', false);
+    }
 }
