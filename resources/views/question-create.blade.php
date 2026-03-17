@@ -4,7 +4,7 @@
 
 @section('content')
     <section class="main-content max-w-150 translate-x-0 mx-auto my-15 duration-300">
-        <h2 class="font-semibold dark:text-gray-200 mb-6 text-3xl">Create post</h2>
+        <h2 class="font-semibold dark:text-gray-200 mb-6 text-3xl">Create Question</h2>
         <form action="{{ route('question.create') }}" method="post" class="w-full rounded-3xl">
             @csrf
             <div class="mb-8">
