@@ -41,7 +41,7 @@
 
                 <label for="email" class="font-medium text-xl">Email</label>
                 <div class="mb-5">
-                    <input name="email" type="email" placeholder="Email"
+                    <input name="email" type="email" placeholder="Email" value="{{ old('email') }}"
                         class="w-full border border-neutral-600 rounded-lg py-2 px-4 text-lg outline-none">
                     @error('email')
                         <span class="font-medium text-red-500">{{ $message }}</span>
