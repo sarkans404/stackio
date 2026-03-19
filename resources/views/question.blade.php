@@ -666,7 +666,7 @@
 
         </div>
 
-        <x-aside-card :question="$question" :questionsQty="$questionsQty" :popularTags="$popularTags" :answersQty="$answersQty" :commentQty="$commentQty"
-            :userQty="$userQty" />
+        <x-aside-card :question="$question" :recentPosts="$recentPosts" :questionsQty="$questionsQty" :popularTags="$popularTags" :answersQty="$answersQty"
+            :commentQty="$commentQty" :userQty="$userQty" />
     </section>
 @endsection
