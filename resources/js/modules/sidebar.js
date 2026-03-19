@@ -15,6 +15,9 @@ export default function initSidebar() {
         icon?.classList.remove("rotate-180");
         content?.classList.replace("translate-x-0", "translate-x-20");
     }
+    if (state === "closed"){
+        icon?.classList.add("rotate-180");
+    }
 
     toggle.addEventListener("click", () => {
 
