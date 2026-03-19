@@ -12,6 +12,6 @@ Route::controller(UserController::class)->group(function () {
     Route::get('/user/edit', 'userEdit')->name('user.edit');
     Route::post('/user/edit', 'userUpdate')->name('user.update');
 
-    Route::get('/user/', 'index')->name('user.profile')->middleware('auth');
+    Route::get('/user/{id}', 'index')->name('user.profile')->middleware('auth');
 }
 );
