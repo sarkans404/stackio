@@ -3,69 +3,108 @@
 namespace App\Http\Controllers;
 
 use App\Models\Question;
+use App\Models\Responses;
+use App\Models\SavedQuestions;
+use App\Models\Tags;
+use App\Models\User;
 use App\Models\Votes;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
-    public function index()
+    private function baseQuestionQuery()
     {
-        $questions = Question::with('user', 'images')
-            ->paginate(20);
+        return Question::with('user', 'images');
+    }
 
-        $questionsQty = Question::count();
-
-        $userVotes = [];
-
-        if (Auth::check()) {
-            $userVotes = Votes::where('user_id', Auth::id())
-                ->where('votable_type', 'question')
-                ->pluck('type', 'votable_id')
-                ->toArray();
+    private function getUserVotes()
+    {
+        if (! Auth::check()) {
+            return [];
         }
 
-        return view('home', compact('questions', 'userVotes', 'questionsQty'));
+        return Votes::where('user_id', Auth::id())
+            ->where('votable_type', 'question')
+            ->pluck('type', 'votable_id')
+            ->toArray();
+    }
+
+    private function getUserSaved()
+    {
+        if (! Auth::check()) {
+            return [];
+        }
+
+        return SavedQuestions::where('user_id', Auth::id())
+            ->pluck('user_id', 'question_id')
+            ->toArray();
+    }
+
+    private function getPopularTags()
+    {
+        return Tags::withCount('questions')
+            ->having('questions_count', '>', 0)
+            ->orderByDesc('questions_count')
+            ->limit(5)
+            ->get();
+    }
+
+    private function getAnswersQty()
+    {
+        return Question::sum('answers');
+    }
+
+    private function getCommentsQty()
+    {
+        return Responses::whereNotNull('parent_id')->count();
+    }
+
+    public function index()
+    {
+        return view('home', [
+            'questions' => $this->baseQuestionQuery()
+                ->paginate(20),
+            'userVotes' => $this->getUserVotes(),
+            'userSaved' => $this->getUserSaved(),
+            'questionsQty' => Question::count(),
+            'answersQty' => $this->getAnswersQty(),
+            'commentQty' => $this->getCommentsQty(),
+            'userQty' => User::count(),
+            'popularTags' => $this->getPopularTags(),
+        ]);
     }
 
     public function popular()
     {
-        $questions = Question::with('user', 'images')
-            ->withCount('responses')
-            ->orderByDesc('upvotes')
-            ->paginate(20);
-
-        $questionsQty = Question::count();
-
-        $userVotes = [];
-
-        if (Auth::check()) {
-            $userVotes = Votes::where('user_id', Auth::id())
-                ->where('votable_type', 'question')
-                ->pluck('type', 'votable_id')
-                ->toArray();
-        }
-
-        return view('popular', compact('questions', 'userVotes', 'questionsQty'));
+        return view('popular', [
+            'questions' => $this->baseQuestionQuery()
+                ->withCount('responses')
+                ->orderByDesc('upvotes')
+                ->paginate(20),
+            'userVotes' => $this->getUserVotes(),
+            'userSaved' => $this->getUserSaved(),
+            'questionsQty' => Question::count(),
+            'answersQty' => $this->getAnswersQty(),
+            'commentQty' => $this->getCommentsQty(),
+            'userQty' => User::count(),
+            'popularTags' => $this->getPopularTags(),
+        ]);
     }
 
     public function new()
     {
-        $questions = Question::with('user', 'images')
-            ->orderByDesc('id')
-            ->paginate(20);
-
-        $questionsQty = Question::count();
-
-        $userVotes = [];
-
-        if (Auth::check()) {
-            $userVotes = Votes::where('user_id', Auth::id())
-                ->where('votable_type', 'question')
-                ->pluck('type', 'votable_id')
-                ->toArray();
-        }
-
-        return view('new', compact('questions', 'userVotes', 'questionsQty'));
+        return view('new', [
+            'questions' => $this->baseQuestionQuery()
+                ->orderByDesc('id')
+                ->paginate(20),
+            'userVotes' => $this->getUserVotes(),
+            'userSaved' => $this->getUserSaved(),
+            'questionsQty' => Question::count(),
+            'answersQty' => $this->getAnswersQty(),
+            'commentQty' => $this->getCommentsQty(),
+            'userQty' => User::count(),
+            'popularTags' => $this->getPopularTags(),
+        ]);
     }
 
     public function notificationShow()
