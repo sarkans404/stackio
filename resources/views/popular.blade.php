@@ -13,7 +13,7 @@
             @endforelse
         </div>
 
-        <x-aside-card :question="$question" :questionsQty="$questionsQty" :popularTags="$popularTags" :answersQty="$answersQty" :commentQty="$commentQty"
+        <x-aside-card :recentPosts="$recentPosts" :questionsQty="$questionsQty" :popularTags="$popularTags" :answersQty="$answersQty" :commentQty="$commentQty"
             :userQty="$userQty" />
 
     </section>
