@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
 @section('title')
-    {{ $user['name'] }}
+    {{ Auth::user()->username }}
 @endsection
 
 @section('content')
     <x-main-user :user="$user">
         <div class="max-w-200 h-160 mx-auto overflow-y-scroll scroll-smooth">
-            <x-post-card :question="$user" />
-            <x-post-card :question="$user" />
-            <x-post-card :question="$user" />
+            @foreach ($questions as $question)
+                <x-post-mini :question="$question" :userSaved="$userSaved" />
+            @endforeach
         </div>
     </x-main-user>
 @endsection
