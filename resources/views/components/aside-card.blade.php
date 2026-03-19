@@ -3,5 +3,7 @@
 
     <x-popular-tags-card :popularTags="$popularTags" />
 
-    <x-recent-card :question="$question" />
+    @if (Auth::check() && $recentPosts->isNotEmpty())
+        <x-recent-card :recentPosts="$recentPosts" />
+    @endif
 </div>
