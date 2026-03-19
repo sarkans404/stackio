@@ -58,15 +58,15 @@
                             </svg>
                             Follow reponse
                         </button>
-                        <button type="button"
-                            class="w-full flex items-center gap-4 px-4 py-2 cursor-pointer bg-[#f8f8f8] dark:bg-[#101314] hover:bg-gray-200 dark:hover:bg-[#313232] duration-300">
+                        <button type="button" data-user-id="{{ Auth::id() }}" data-question-id="{{ $question->id }}"
+                            class="saveBtn {{ $userSaved[0] ?? -1 === Auth::id() ? 'text-blue-500 dark:text-yellow-500' : '' }} w-full flex items-center gap-4 px-4 py-2 cursor-pointer bg-[#f8f8f8] dark:bg-[#101314] hover:bg-gray-200 dark:hover:bg-[#313232] duration-300">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="size-6">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
                             </svg>
 
-                            Save
+                            <span>{{ ($userSaved[$question->id] ?? -1) === Auth::id() ? 'Saved' : 'Save' }}</span>
                         </button>
                         <button type="button"
                             class="w-full flex items-center gap-4 px-4 py-2 cursor-pointer bg-[#f8f8f8] dark:bg-[#101314] hover:bg-gray-200 dark:hover:bg-[#313232] duration-300">
