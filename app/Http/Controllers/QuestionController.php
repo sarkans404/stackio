@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Question;
 use App\Models\QuestionTag;
+use App\Models\RecentQuestions;
 use App\Models\Responses;
 use App\Models\SavedQuestions;
 use App\Models\Tags;
@@ -31,6 +32,19 @@ class QuestionController extends Controller
     private function getCommentsQty()
     {
         return Responses::whereNotNull('parent_id')->count();
+    }
+
+    private function getRecentPosts()
+    {
+        if (Auth::check()) {
+            return Question::select('questions.*')
+                ->join('recent_questions', 'questions.id', '=', 'recent_questions.question_id')
+                ->where('recent_questions.user_id', Auth::id())
+                ->orderByDesc('recent_questions.updated_at')
+                ->limit(5)
+                ->with('user')
+                ->get();
+        }
     }
 
     public function index($id)
@@ -74,12 +88,42 @@ class QuestionController extends Controller
                 ->toArray();
         }
 
+        if (Auth::check()) {
+
+            $exists = RecentQuestions::where('user_id', Auth::id())
+                ->where('question_id', $id)
+                ->exists();
+
+            if (! $exists) {
+
+                $count = RecentQuestions::where('user_id', Auth::id())->count();
+
+                if ($count >= 5) {
+                    RecentQuestions::where('user_id', Auth::id())
+                        ->orderBy('created_at', 'asc')
+                        ->first()
+                        ?->delete();
+                }
+
+                RecentQuestions::create([
+                    'user_id' => Auth::id(),
+                    'question_id' => $id,
+                ]);
+            }
+            if ($exists) {
+                RecentQuestions::where('user_id', Auth::id())
+                    ->where('question_id', $id)
+                    ->update(['updated_at' => now()]);
+            }
+        }
+        $recentPosts = $this->getRecentPosts();
+
         $popularTags = $this->getPopularTags();
         $answersQty = $this->getAnswersQty();
         $commentQty = $this->getCommentsQty();
         $userQty = User::count();
 
-        return view('question', compact('question', 'userVotes', 'userVotesRes', 'userSaved', 'questionsQty', 'popularTags', 'answersQty', 'commentQty', 'userQty'));
+        return view('question', compact('question', 'recentPosts', 'userVotes', 'userVotesRes', 'userSaved', 'questionsQty', 'popularTags', 'answersQty', 'commentQty', 'userQty'));
     }
 
     public function createShow()
