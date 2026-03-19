@@ -14,7 +14,8 @@ class HomeController extends Controller
 {
     private function baseQuestionQuery()
     {
-        return Question::with('user', 'images');
+        return Question::with('user', 'images')
+            ->whereDoesntHave('hidden');
     }
 
     private function getUserVotes()
