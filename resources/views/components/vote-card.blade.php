@@ -1,15 +1,16 @@
 <div data-id="{{ $question->id }}"
     class="post-card w-full my-2 border-b px-4 border-neutral-300 dark:border-neutral-700 bg-[#f8f8f8] dark:bg-[#101314] py-3 dark:hover:bg-neutral-800 hover:bg-neutral-100 duration-300 cursor-pointer">
     <div class="flex items-center justify-between mb-2">
-        <div class="flex items-center gap-2 text-sm">
+        <a href="{{ route('user.profile', $question->user->id) }}" class="flex items-center group gap-2 text-sm">
             <div class="w-8 h-8 bg-gray-300 dark:bg-gray-200 rounded-full overflow-hidden">
                 <img src="{{ $question->user->avatar }}" alt="Avatar"
                     class="rounded-full w-full h-full object-cover object-center">
             </div>
-            <span class="font-medium text-neutral-700 dark:text-gray-300">{{ $question->user->username }}</span>
+            <span
+                class="font-medium text-neutral-700 dark:text-gray-300 group-hover:underline underline-offset-2">{{ $question->user->username }}</span>
             &bull;
             <span class="text-neutral-500 dark:text-gray-400">{{ $question->created_at->diffForHumans() }}</span>
-        </div>
+        </a>
 
         @if (Auth::id() === $question->user->id || auth()->user()?->role === 'admin')
             <div class="relative">
