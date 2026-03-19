@@ -11,13 +11,14 @@
         <div>
             <div class="flex items-center justify-between mb-4">
                 <div class="relative flex items-center gap-2 text-sm">
-                    <div class="w-12 h-12 bg-gray-300 dark:bg-gray-200 rounded-full overflow-hidden">
+                    <a href="{{ route('user.profile', $question->user->id) }}"
+                        class="w-12 h-12 bg-gray-300 dark:bg-gray-200 rounded-full overflow-hidden">
                         <img src="{{ $question->user->avatar }}" alt="AV"
                             class="w-full h-full object-cover rounded-full">
-                    </div>
-                    <div class="flex flex-col justify-center">
+                    </a>
+                    <a href="{{ route('user.profile', $question->user->id) }}" class="flex flex-col group justify-center">
                         <span
-                            class="font-medium text-neutral-700 dark:text-gray-300 leading-4">{{ $question->user->username }}</span>
+                            class="font-medium text-neutral-700 dark:text-gray-300 leading-4 group-hover:underline underline-offset-2">{{ $question->user->username }}</span>
                         <div class="flex gap-2 items-center">
                             <span
                                 class="text-neutral-500 dark:text-gray-400">{{ $question->created_at->format('d.m.Y') }}</span>
@@ -25,7 +26,7 @@
                             <span
                                 class="text-neutral-500 dark:text-gray-400">{{ $question->updated_at->diffForHumans() }}</span>
                         </div>
-                    </div>
+                    </a>
 
                     <div id="back-btn"
                         class="absolute top-1/2 -left-2 -translate-x-full -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center dark:bg-[#333333] bg-gray-300 dark:hover:bg-neutral-700 hover:bg-gray-400 cursor-pointer duration-300">
@@ -300,13 +301,17 @@
                         @endif
 
                         <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
-                                <img src="{{ $responses->user->avatar }}" alt="AV"
-                                    class="w-full h-full object-cover rounded-full">
-                            </div>
-                            <span class="font-medium">{{ $responses->user->username }}</span>
-                            &bull;
-                            <span class="text-gray-500 text-sm">{{ $responses->updated_at->diffForHumans() }}</span>
+                            <a href="{{ route('user.profile', $responses->user->id) }}"
+                                class="group flex items-center gap-4">
+                                <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
+                                    <img src="{{ $responses->user->avatar }}" alt="AV"
+                                        class="w-full h-full object-cover rounded-full">
+                                </div>
+                                <span
+                                    class="font-medium group-hover:underline underline-offset-2">{{ $responses->user->username }}</span>
+                                &bull;
+                                <span class="text-gray-500 text-sm">{{ $responses->updated_at->diffForHumans() }}</span>
+                            </a>
                             @if ($responses->is_edited)
                                 &bull;
                                 <span class="text-gray-500 text-sm">Edited</span>
@@ -489,15 +494,17 @@
                                 </div>
                             @endif
                             <div class="relative flex items-center gap-4">
-
-                                <div class="w-10 h-10 bg-gray-300 rounded-full">
-                                    <img src="{{ $comment->user->avatar }}" alt="AV"
-                                        class="w-full h-full object-cover rounded-full">
-                                </div>
-                                <span class="font-medium">{{ $comment->user->username }}</span>
-                                &bull;
-                                <span class="text-gray-500 text-sm">{{ $comment->updated_at->diffForHumans() }}</span>
-
+                                <a href="{{ route('user.profile', $comment->user->id) }}"
+                                    class="flex items-center gap-4 group">
+                                    <div class="w-10 h-10 bg-gray-300 rounded-full">
+                                        <img src="{{ $comment->user->avatar }}" alt="AV"
+                                            class="w-full h-full object-cover rounded-full">
+                                    </div>
+                                    <span
+                                        class="font-medium group-hover:underline underline-offset-2">{{ $comment->user->username }}</span>
+                                    &bull;
+                                    <span class="text-gray-500 text-sm">{{ $comment->updated_at->diffForHumans() }}</span>
+                                </a>
                                 @if ($comment->user_id === $question->user->id)
                                     <span
                                         class="text-sm bg-gray-300 dark:bg-neutral-500 px-3 py-0.5 rounded-full">Author</span>
@@ -507,7 +514,10 @@
                                     <span
                                         class="text-sm bg-blue-500 dark:bg-yellow-600 px-3 py-0.5 rounded-full">Admin</span>
                                 @endif
-
+                                @if ($comment->is_edited)
+                                    &bull;
+                                    <span class="text-gray-500 text-sm">Edited</span>
+                                @endif
 
                                 <div
                                     class="absolute top-0 -left-2 text-gray-400 -translate-x-full w-10 h-10 flex items-center justify-center">
