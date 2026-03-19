@@ -6,10 +6,10 @@
 
 @section('content')
     <x-main-user :user="$user">
-        <div class="max-w-200 h-160 mx-auto overflow-y-scroll scroll-smooth">
-            <x-post-card :question="$user" />
-            <x-post-card :question="$user" />
-            <x-post-card :question="$user" />
+        <div class="max-w-200 max-h-250 mx-auto pr-2 overflow-y-scroll scroll-smooth">
+            @foreach ($questions as $question)
+                <x-vote-card :question="$question" />
+            @endforeach
         </div>
     </x-main-user>
 @endsection
