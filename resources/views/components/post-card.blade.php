@@ -1,15 +1,16 @@
 <div data-id="{{ $question->id }}"
     class="post-card w-full my-2 border-b px-4 border-neutral-300 dark:border-neutral-700 bg-[#f8f8f8] dark:bg-[#101314] py-3 dark:hover:bg-neutral-800 hover:bg-neutral-100 duration-300 cursor-pointer">
     <div class="flex items-center justify-between mb-2">
-        <div class="flex items-center gap-2 text-sm">
+        <a href="{{ route('user.profile', $question->user->id) }}" class="flex group items-center gap-2 text-sm">
             <div class="w-8 h-8 bg-gray-300 dark:bg-gray-200 rounded-full overflow-hidden">
                 <img src="{{ $question->user->avatar }}" alt="Avatar"
                     class="rounded-full w-full h-full object-cover object-center">
             </div>
-            <span class="font-medium text-neutral-700 dark:text-gray-300">{{ $question->user->username }}</span>
+            <span
+                class="font-medium text-neutral-700 dark:text-gray-300 group-hover:underline underline-offset-2">{{ $question->user->username }}</span>
             &bull;
             <span class="text-neutral-500 dark:text-gray-400">{{ $question->created_at->diffForHumans() }}</span>
-        </div>
+        </a>
 
         <div class="relative">
             <div
@@ -42,15 +43,15 @@
 
                     <span>{{ ($userSaved[$question->id] ?? -1) == Auth::id() ? 'Saved' : 'Save' }}</span>
                 </button>
-                <button type="button"
-                    class="w-full flex items-center gap-4 px-4 py-2 cursor-pointer bg-[#f8f8f8] dark:bg-[#101314] hover:bg-gray-200 dark:hover:bg-[#313232] duration-300">
+                <button type="button" data-user-id="{{ Auth::id() }}" data-question-id="{{ $question->id }}"
+                    class="hideBtn w-full flex items-center gap-4 px-4 py-2 cursor-pointer bg-[#f8f8f8] dark:bg-[#101314] hover:bg-gray-200 dark:hover:bg-[#313232] duration-300">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
                     </svg>
 
-                    Hide post
+                    <span>Hide Post</span>
                 </button>
                 <button type="button"
                     class="w-full flex items-center gap-4 px-4 py-2 cursor-pointer bg-[#f8f8f8] dark:bg-[#101314] hover:bg-gray-200 dark:hover:bg-[#313232] duration-300">
