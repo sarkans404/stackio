@@ -45,11 +45,7 @@ class QuestionController extends Controller
                     ->with(['user', 'children' => fn ($c) => $c->whereHas('user', fn ($cu) => $cu->where('is_banned', false))->with('user')])
                     ->orderByDesc('is_accepted');
             },
-            'hidden',
         ])
-            ->whereDoesntHave('hidden', function ($q) {
-                $q->where('user_id', Auth::id());
-            })
             ->findOrFail($id);
 
         $questionsQty = Question::count();
