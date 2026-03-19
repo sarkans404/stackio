@@ -21,11 +21,11 @@ export default function initSave(){
                     });
 
                     const data = await res.json();
-                    const text = document.querySelector('.saveBtn>span');
+                    const text = btn.querySelector('span');
                     
 
                     if(data.success){
-                         initNotice(data.success);
+                         initNotice(data.success, 'success');
 
                          if(data.action === 'unsaved'){
                               btn.classList.remove('dark:text-yellow-500', 'text-blue-500')
@@ -37,7 +37,7 @@ export default function initSave(){
                          }
                     }
                     if(data.error){
-                         initNotice(data.error);
+                         initNotice(data.error, 'success');
                     }
                } catch(err){
                     initNotice('Catch an error on a save post!')
