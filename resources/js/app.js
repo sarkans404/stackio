@@ -11,6 +11,7 @@ import initEditResponses from "./modules/editResponses";
 import initVote from "./ajax/vote";
 import initSave from "./ajax/save";
 import initHide from "./ajax/hide";
+import initClearRecent from "./ajax/clearRecent";
 
 document.addEventListener("DOMContentLoaded", () => {
     initTheme();
@@ -24,4 +25,5 @@ document.addEventListener("DOMContentLoaded", () => {
     initVote();
     initSave();
     initHide();
+    initClearRecent();
 });
