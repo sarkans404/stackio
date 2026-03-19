@@ -60,8 +60,22 @@ class HomeController extends Controller
         return Responses::whereNotNull('parent_id')->count();
     }
 
+    private function getRecentPosts()
+    {
+        if (Auth::check()) {
+            return Question::select('questions.*')
+                ->join('recent_questions', 'questions.id', '=', 'recent_questions.question_id')
+                ->where('recent_questions.user_id', Auth::id())
+                ->orderByDesc('recent_questions.updated_at')
+                ->limit(5)
+                ->with('user')
+                ->get();
+        }
+    }
+
     public function index()
     {
+
         return view('home', [
             'questions' => $this->baseQuestionQuery()
                 ->paginate(20),
@@ -72,6 +86,7 @@ class HomeController extends Controller
             'commentQty' => $this->getCommentsQty(),
             'userQty' => User::count(),
             'popularTags' => $this->getPopularTags(),
+            'recentPosts' => $this->getRecentPosts(),
         ]);
     }
 
@@ -89,6 +104,7 @@ class HomeController extends Controller
             'commentQty' => $this->getCommentsQty(),
             'userQty' => User::count(),
             'popularTags' => $this->getPopularTags(),
+            'recentPosts' => $this->getRecentPosts(),
         ]);
     }
 
@@ -105,6 +121,7 @@ class HomeController extends Controller
             'commentQty' => $this->getCommentsQty(),
             'userQty' => User::count(),
             'popularTags' => $this->getPopularTags(),
+            'recentPosts' => $this->getRecentPosts(),
         ]);
     }
 
