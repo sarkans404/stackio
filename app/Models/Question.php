@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Question extends Model
 {
@@ -41,5 +42,23 @@ class Question extends Model
     public function question_tags()
     {
         return $this->hasMany(QuestionTag::class);
+    }
+
+    public function saved_question()
+    {
+        return $this->hasMany(SavedQuestions::class);
+    }
+
+    public function votes()
+    {
+        return $this->hasMany(Votes::class, 'votable_id')
+            ->where('votable_type', 'question')
+            ->where('user_id', Auth::id());
+    }
+
+    public function hidden()
+    {
+        return $this->hasMany(HiddenQuestions::class)
+            ->where('user_id', Auth::id());
     }
 }
