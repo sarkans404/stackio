@@ -9,6 +9,7 @@ import initClipboard from "./modules/clipboard";
 import initBackButton from "./modules/backButton";
 import initEditResponses from "./modules/editResponses";
 import initVote from "./ajax/vote";
+import initSave from "./ajax/save";
 
 document.addEventListener("DOMContentLoaded", () => {
     initTheme();
@@ -20,4 +21,5 @@ document.addEventListener("DOMContentLoaded", () => {
     initClipboard();
     initEditResponses();
     initVote();
+    initSave();
 });
