@@ -51,14 +51,14 @@ export default function initVote(){
                     if(data.upvotes || data.downvotes){
                         upvoteText? upvoteText.innerText = data.upvotes : '';
                         downvoteText? downvoteText.innerText = data.downvotes : '';
-                        initNotice('Voted Successful!');
+                        initNotice('Voted Successful!', 'success');
                     }
                 } else {
-                    initNotice(data.error);
+                    initNotice(data.error, 'error');
                 }
 
             } catch(err) {
-                initNotice('Voting Error!');
+                initNotice('Voting Error!', 'error');
                 console.error(err);
             }
         });
