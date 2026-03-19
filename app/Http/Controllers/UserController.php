@@ -2,29 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\HiddenQuestions;
 use App\Models\Question;
 use App\Models\Responses;
 use App\Models\SavedQuestions;
+use App\Models\User;
 use App\Models\Votes;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index($id)
     {
         if (! Auth::check()) {
             return redirect('login', 403);
         }
-        $user = Auth::user();
-        $answerQty = Responses::where('user_id', Auth::id())
+        $user = User::where('id', $id)->first();
+
+        $answerQty = Responses::where('user_id', $user->id)
             ->where('parent_id', null)
             ->count();
-        $questionQty = Question::where('user_id', Auth::id())
+        $questionQty = Question::where('user_id', $user->id)
             ->count();
-        $upvoteQty = Votes::where('user_id', Auth::id())
+        $upvoteQty = Votes::where('user_id', $user->id)
             ->where('type', 'up')
             ->count();
-        $downvoteQty = Votes::where('user_id', Auth::id())
+        $downvoteQty = Votes::where('user_id', $user->id)
             ->where('type', 'down')
             ->count();
 
@@ -35,7 +38,8 @@ class UserController extends Controller
     {
         return view('user.user-questions', [
             'user' => Auth::user(),
-            'questions' => Question::where('user_id', Auth::id())->get(),
+            'questions' => Question::with('images')
+                ->where('user_id', Auth::id())->get(),
             'userSaved' => SavedQuestions::where('user_id', Auth::id())
                 ->pluck('question_id')
                 ->flip()
@@ -49,7 +53,6 @@ class UserController extends Controller
             'user' => Auth::user(),
             'responses' => Responses::with('question')
                 ->where('user_id', Auth::id())
-                ->where('parent_id', null)
                 ->get(),
         ]);
     }
@@ -72,18 +75,19 @@ class UserController extends Controller
 
     public function userHidden()
     {
-        return view('user.user-hidden')->with('user', [
-            'name' => 'John Doe',
-            'date' => '13-03-2026',
-            'id' => 99,
-            'title' => 'How to implement a binary search algorithm in Python?',
-            'author' => 'John Doe',
-            'date' => '2023-10-01',
-            'content' => 'I am trying to implement a binary search algorithm in Python, but I am having trouble understanding how to handle edge cases. Can someone provide an example implementation?',
-            'upvotes' => 15,
-            'answers' => 3,
-            'views' => 120,
-
+        return view('user.user-hidden', [
+            'user' => Auth::user(),
+            'questions' => Question::with('images', 'user', 'hidden')
+                ->whereHas('hidden')
+                ->get(),
+            'userSaved' => SavedQuestions::where('user_id', Auth::id())
+                ->pluck('question_id')
+                ->flip()
+                ->toArray(),
+            'userHidden' => HiddenQuestions::where('user_id', Auth::id())
+                ->pluck('question_id')
+                ->flip()
+                ->toArray(),
         ]);
     }
 
