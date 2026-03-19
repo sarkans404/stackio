@@ -6,7 +6,8 @@
             </div>
             <div class="flex flex-col">
                 <span class="text-4xl font-semibold dark:text-white">{{ $user->username }}</span>
-                <span class="text-lg font-medium dark:text-gray-300 text-neutral-700">{{ $user->created_at }}</span>
+                <span
+                    class="text-lg font-medium dark:text-gray-300 text-neutral-700">{{ $user->created_at->format('d.m.Y') }}</span>
             </div>
         </div>
         <div class="flex flex-col gap-2 items-center justify-center">
