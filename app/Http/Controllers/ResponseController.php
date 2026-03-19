@@ -57,6 +57,7 @@ class ResponseController extends Controller
 
         if ($response->user_id === Auth::id()) {
             $response->body = $request->body;
+            $response->is_edited = true;
             $response->save();
         }
 
