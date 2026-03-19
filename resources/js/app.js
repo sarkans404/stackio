@@ -10,6 +10,7 @@ import initBackButton from "./modules/backButton";
 import initEditResponses from "./modules/editResponses";
 import initVote from "./ajax/vote";
 import initSave from "./ajax/save";
+import initHide from "./ajax/hide";
 
 document.addEventListener("DOMContentLoaded", () => {
     initTheme();
@@ -22,4 +23,5 @@ document.addEventListener("DOMContentLoaded", () => {
     initEditResponses();
     initVote();
     initSave();
+    initHide();
 });
