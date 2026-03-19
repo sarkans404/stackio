@@ -8,14 +8,14 @@
     <x-main-user :user="$user">
         <div>
             <div class="flex items-center gap-4 mb-5">
-                <span class="py-2 px-4 dark:bg-neutral-600 bg-gray-300 dark:text-neutral-100 font-medium rounded-lg">0
-                    answers</span>
-                <span class="py-2 px-4 dark:bg-neutral-600 bg-gray-300 dark:text-neutral-100 font-medium rounded-lg">0
-                    questions</span>
-                <span class="py-2 px-4 dark:bg-neutral-600 bg-gray-300 dark:text-neutral-100 font-medium rounded-lg">0
-                    upvotes</span>
-                <span class="py-2 px-4 dark:bg-neutral-600 bg-gray-300 dark:text-neutral-100 font-medium rounded-lg">0
-                    downvotes</span>
+                <span class="py-2 px-4 dark:bg-neutral-600 bg-gray-300 dark:text-neutral-100 font-medium rounded-lg">
+                    {{ $answerQty }} answers</span>
+                <span class="py-2 px-4 dark:bg-neutral-600 bg-gray-300 dark:text-neutral-100 font-medium rounded-lg">
+                    {{ $questionQty }} questions</span>
+                <span class="py-2 px-4 dark:bg-neutral-600 bg-gray-300 dark:text-neutral-100 font-medium rounded-lg">
+                    {{ $upvoteQty }} upvotes</span>
+                <span class="py-2 px-4 dark:bg-neutral-600 bg-gray-300 dark:text-neutral-100 font-medium rounded-lg">
+                    {{ $downvoteQty }} downvotes</span>
                 <form action="{{ route('logout') }}" method="post" class="ml-auto">
                     @csrf
                     <button type="submit"
