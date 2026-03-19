@@ -9,7 +9,6 @@ Route::controller(QuestionController::class)->group(function () {
     Route::get('/question/edit/{id}', 'editShow')->name('question.edit.show')->middleware('auth');
     Route::post('/question/edit', 'edit')->name('question.edit')->middleware('auth');
     Route::post('/question/follow', 'follow')->name('question.follow')->middleware('auth');
-    Route::post('/question/save', 'save')->name('question.save')->middleware('auth');
     Route::post('/question/hide', 'hide')->name('question.hide')->middleware('auth');
     Route::post('/question/report', 'report')->name('question.report')->middleware('auth');
     Route::post('/question/showless', 'showLess')->name('question.showless')->middleware('auth');
