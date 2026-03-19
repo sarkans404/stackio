@@ -5,7 +5,11 @@ export default function initBackButton() {
     if (!back) return;
 
     back.addEventListener("click", () => {
-        window.location.href = "/";
+        if (document.referrer && document.referrer !== window.location.href) {
+            window.location.href = document.referrer;
+        } else {
+            window.location.href = "/";
+        }
     });
 
 }
