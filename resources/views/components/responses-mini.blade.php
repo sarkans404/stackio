@@ -34,11 +34,11 @@
         </div>
     @endif
 
-    <div class="flex items-center gap-4">
+    <a href="{{ route('question.show', $response->question->id) }}" class="flex items-center group gap-4">
         <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
             <img src="{{ $response->user->avatar }}" alt="AV" class="w-full h-full object-cover rounded-full">
         </div>
-        <span class="font-medium">{{ $response->user->username }}</span>
+        <span class="font-medium group-hover:underline underline-offset-2">{{ $response->user->username }}</span>
         &bull;
         <span class="text-gray-500 text-sm">{{ $response->updated_at->diffForHumans() }}</span>
         @if ($response->is_edited)
@@ -49,7 +49,7 @@
             <span class="text-sm bg-emerald-600 px-3 py-0.5 rounded-full">Accepted</span>
         @endif
 
-    </div>
+    </a>
 
     <p class="response-body text-neutral-400 font-medium">
         {{ $response->body }}
