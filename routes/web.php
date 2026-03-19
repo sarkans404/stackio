@@ -9,3 +9,4 @@ require __DIR__.'/web/notifications.php';
 require __DIR__.'/web/users.php';
 require __DIR__.'/web/static.php';
 require __DIR__.'/web/vote.php';
+require __DIR__.'/web/save.php';
