@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -66,6 +67,28 @@ class AuthController extends Controller
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
+        return redirect()->route('home');
+    }
+
+    public function delete(Request $request)
+    {
+        if (! Auth::check()) {
+            return redirect()->route('home');
+        }
+        if (Auth::id() != $request->user_id) {
+            return redirect()->route('home');
+        }
+
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        $user = User::where('id', $request->user_id)->get();
+        if ($user->avatar) {
+            Storage::disk('public')->delete($user->avatar);
+        }
+        User::where('id', $request->user_id)->delete();
 
         return redirect()->route('home');
     }
