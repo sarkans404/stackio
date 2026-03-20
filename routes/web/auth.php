@@ -11,4 +11,5 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/login', 'login')->name('login')->middleware('guest');
 
     Route::post('/user/logout', 'logout')->name('logout')->middleware('auth');
+    Route::delete('/user/delete', 'delete')->name('user.delete')->middleware('auth');
 });
