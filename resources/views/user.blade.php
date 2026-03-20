@@ -16,11 +16,13 @@
                     {{ $upvoteQty }} upvotes</span>
                 <span class="py-2 px-4 dark:bg-neutral-600 bg-gray-300 dark:text-neutral-100 font-medium rounded-lg">
                     {{ $downvoteQty }} downvotes</span>
-                <form action="{{ route('logout') }}" method="post" class="ml-auto">
-                    @csrf
-                    <button type="submit"
-                        class=" bg-red-500 py-2 px-6 rounded-lg font-semibold hover:bg-red-700 text-white duration-300">Logout</button>
-                </form>
+                @if ($user->id === Auth::id())
+                    <form action="{{ route('logout') }}" method="post" class="ml-auto">
+                        @csrf
+                        <button type="submit"
+                            class=" bg-red-500 py-2 px-6 rounded-lg font-semibold hover:bg-red-700 text-white duration-300">Logout</button>
+                    </form>
+                @endif
             </div>
             <div>
                 <h2 class="font-semibold text-3xl mb-2">About</h2>
