@@ -8,15 +8,14 @@ use App\Models\Responses;
 use App\Models\SavedQuestions;
 use App\Models\User;
 use App\Models\Votes;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
     public function index($id)
     {
-        if (! Auth::check()) {
-            return redirect('login', 403);
-        }
         $user = User::where('id', $id)->first();
 
         $answerQty = Responses::where('user_id', $user->id)
@@ -94,7 +93,7 @@ class UserController extends Controller
     public function userUpvoted()
     {
         if (! Auth::check()) {
-            return redirect('login', 403);
+            return redirect()->route('login');
         }
 
         return view('user.user-upvoted', [
@@ -110,7 +109,7 @@ class UserController extends Controller
     public function userDownvoted()
     {
         if (! Auth::check()) {
-            return redirect('login', 403);
+            return redirect()->route('login');
         }
 
         return view('user.user-downvoted', [
@@ -123,22 +122,36 @@ class UserController extends Controller
         ]);
     }
 
-    // ---
-
     public function userEdit()
     {
-        return view('user.user-edit')->with('user', [
-            'name' => 'John Doe',
-            'email' => 'example@gmail.com',
-            'date' => '13-03-2026',
-            'id' => 99,
-            'title' => 'How to implement a binary search algorithm in Python?',
-            'author' => 'John Doe',
-            'date' => '2023-10-01',
-            'upvotes' => 15,
-            'answers' => 3,
-            'views' => 120,
-
+        return view('user.user-edit', [
+            'user' => Auth::user(),
         ]);
+    }
+
+    public function update(Request $request)
+    {
+        $request->validate([
+            'username' => 'required|min:2',
+            'avatar' => 'sometimes|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
+
+        $user = Auth::user();
+
+        $user->bio = $request->bio;
+        $user->username = $request->username;
+
+        if ($request->hasFile('avatar')) {
+            if ($user->avatar) {
+                Storage::disk('public')->delete($user->avatar);
+            }
+
+            $path = $request->file('avatar')->store('avatars', 'public');
+            $user->avatar = $path;
+        }
+
+        $user->save();
+
+        return redirect()->route('user.profile', Auth::id());
     }
 }
