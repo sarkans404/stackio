@@ -13,7 +13,7 @@
                 <div class="relative flex items-center gap-2 text-sm">
                     <a href="{{ route('user.profile', $question->user->id) }}"
                         class="w-12 h-12 bg-gray-300 dark:bg-gray-200 rounded-full overflow-hidden">
-                        <img src="{{ $question->user->avatar }}" alt="AV"
+                        <img src="{{ $question->user?->avatar ? asset('storage/' . $question->user->avatar) : '' }}"
                             class="w-full h-full object-cover rounded-full">
                     </a>
                     <a href="{{ route('user.profile', $question->user->id) }}" class="flex flex-col group justify-center">
@@ -60,7 +60,7 @@
                             Follow reponse
                         </button>
                         <button type="button" data-user-id="{{ Auth::id() }}" data-question-id="{{ $question->id }}"
-                            class="saveBtn {{ $userSaved[0] ?? -1 === Auth::id() ? 'text-blue-500 dark:text-yellow-500' : '' }} w-full flex items-center gap-4 px-4 py-2 cursor-pointer bg-[#f8f8f8] dark:bg-[#101314] hover:bg-gray-200 dark:hover:bg-[#313232] duration-300">
+                            class="saveBtn {{ $userSaved[$question->id] ?? -1 === Auth::id() ? 'text-blue-500 dark:text-yellow-500' : '' }} w-full flex items-center gap-4 px-4 py-2 cursor-pointer bg-[#f8f8f8] dark:bg-[#101314] hover:bg-gray-200 dark:hover:bg-[#313232] duration-300">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="size-6">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -304,7 +304,7 @@
                             <a href="{{ route('user.profile', $responses->user->id) }}"
                                 class="group flex items-center gap-4">
                                 <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
-                                    <img src="{{ $responses->user->avatar }}" alt="AV"
+                                    <img src="{{ $responses->user?->avatar ? asset('storage/' . $responses->user->avatar) : '' }}"
                                         class="w-full h-full object-cover rounded-full">
                                 </div>
                                 <span
@@ -497,7 +497,7 @@
                                 <a href="{{ route('user.profile', $comment->user->id) }}"
                                     class="flex items-center gap-4 group">
                                     <div class="w-10 h-10 bg-gray-300 rounded-full">
-                                        <img src="{{ $comment->user->avatar }}" alt="AV"
+                                        <img src="{{ $comment->user?->avatar ? asset('storage/' . $comment->user->avatar) : '' }}"
                                             class="w-full h-full object-cover rounded-full">
                                     </div>
                                     <span
