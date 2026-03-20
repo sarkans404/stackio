@@ -2,7 +2,8 @@
     <div class="w-full flex items-center justify-between">
         <div class="w-full flex items-center gap-4">
             <div class="w-20 h-20 rounded-full dark:bg-neutral-300 bg-neutral-300">
-
+                <img src="{{ $user?->avatar ? asset('storage/' . $user->avatar) : '' }}"
+                    class="w-full h-full object-cover rounded-full">
             </div>
             <div class="flex flex-col">
                 <span class="text-4xl font-semibold dark:text-white">{{ $user->username }}</span>
