@@ -12,7 +12,8 @@
                 class="post-card flex items-start justify-between gap-4 border-b py-4 border-neutral-300 px-4 dark:border-neutral-700 dark:hover:bg-neutral-800 hover:bg-neutral-100 duration-300 cursor-pointer">
                 <div class="{{ isset($question->image) ? 'w-[70%]' : 'w-full' }}">
                     <div class="flex items-center gap-2 mb-2">
-                        <img src="" alt="Avatar" class="w-8 h-8 rounded-full dark:bg-gray-300 bg-gray-300">
+                        <img src="{{ $question->user?->avatar ? asset('storage/' . $question->user->avatar) : '' }}"
+                            class="w-8 h-8 rounded-full dark:bg-gray-300 bg-gray-300">
                         <span class="text-sm font-medium text-gray-300">{{ $question->username }}</span>
                     </div>
                     <h4 class="text-sm font-bold dark:text-gray-300 mb-4">{{ $question->title }}</h4>
