@@ -9,5 +9,7 @@ Route::controller(QuestionController::class)->group(function () {
     Route::get('/question/edit/{id}', 'editShow')->name('question.edit.show')->middleware('auth');
     Route::post('/question/edit', 'edit')->name('question.edit')->middleware('auth');
 
+    Route::post('/upload/remove', 'questionImagesRemove')->name('question.images.remove')->middleware('auth');
+
     Route::get('/questions/{id}', 'index')->name('question.show');
 });
