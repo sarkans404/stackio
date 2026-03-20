@@ -7,7 +7,7 @@
 @section('content')
     <section class="main-content max-w-150 translate-x-0 mx-auto my-15 duration-300">
         <h2 class="font-semibold dark:text-gray-200 mb-6 text-3xl">Edit Question</h2>
-        <form action="{{ route('question.edit') }}" method="post" class="w-full rounded-3xl">
+        <form action="{{ route('question.edit') }}" enctype="multipart/form-data" method="post" class="w-full rounded-3xl">
             @csrf
 
             <input type="hidden" name="question_id" value="{{ $question->id }}" class="hidden">
@@ -58,7 +58,7 @@
                 </div>
             @endif
 
-            <div class="flex item-start justify-between">
+            <div class="flex item-start justify-between mb-4">
                 <div>
                     <input type="file" name="img[]" id="img" class="hidden" multiple>
                     @error('img')
@@ -72,11 +72,25 @@
                                 d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                         </svg>
                     </label>
-                    <div class="img-selected flex flex-col gap-1">
-                    </div>
                 </div>
                 <button type="submit"
                     class="px-6 py-2 text-lg font-semibold rounded-lg dark:bg-yellow-600 bg-blue-500 hover:bg-blue-600 dark:hover:bg-yellow-700 duration-300 cursor-pointer">Send</button>
+            </div>
+            <div class="flex flex-wrap w-full gap-4 mb-4">
+                @foreach ($question->images as $img)
+                    <div class="uploadedCont relative group">
+                        <img src="{{ asset('storage/' . $img->image) }}" class="w-full h-28 object-cover rounded-lg">
+
+                        <button type="button"
+                            class="uploadedRemoveBtn absolute top-1 right-1 bg-black/60 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 duration-200"
+                            data-second="true" data-id="{{ $img->id }}">
+                            ✕
+                        </button>
+                    </div>
+                @endforeach
+            </div>
+            <div id="previewContainer" class="img-selected flex flex-wrap w-full gap-4">
+
             </div>
         </form>
     </section>
