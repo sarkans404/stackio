@@ -2,6 +2,8 @@ import { initNotice } from "../components/actionNotice";
 
 export default function initClearRecent() {
      const btn = document.querySelector('#clearRecentBtn');
+     if(!btn) return;
+     
      btn.addEventListener('click', async () => {
           try{
                const res = await fetch('/recent/clear', {
