@@ -44,17 +44,32 @@
                     d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
             </svg>
         </a>
-        <a href="{{ route('user.profile', Auth::id()) }}"
-            class="w-10 h-10 flex items-center justify-center rounded-full hover:text-blue-500 dark:hover:text-yellow-500 hover:bg-gray-200 dark:hover:bg-[#313232] group duration-200">
-            @if (Auth::user()?->avatar)
-                <img src="{{ Auth::user()->avatar }}" alt="AV" class="w-full h-full object-cover rounded-full">
-            @else
+        @auth
+            <a href="{{ route('user.profile', Auth::id()) }}"
+                class="w-10 h-10 flex items-center justify-center rounded-full hover:text-blue-500 dark:hover:text-yellow-500 hover:bg-gray-200 dark:hover:bg-[#313232] group duration-200">
+                @if (Auth::user()?->avatar)
+                    <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt=""
+                        class="w-full h-full object-cover rounded-full">
+                @else
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                    </svg>
+                @endif
+            </a>
+        @endauth
+
+        @guest
+            <a href="{{ route('login.show') }}"
+                class="w-10 h-10 flex items-center justify-center rounded-full hover:text-blue-500 dark:hover:text-yellow-500 hover:bg-gray-200 dark:hover:bg-[#313232] group duration-200">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                 </svg>
-            @endif
-        </a>
+            </a>
+        @endguest
+
     </nav>
 </header>
