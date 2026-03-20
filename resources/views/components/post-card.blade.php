@@ -98,12 +98,57 @@
         <h2 class="text-2xl font-semibold mb-4">{{ Str::limit($question->title, 100) }}</h2>
         <p class="text-gray-600 dark:text-gray-400">{{ Str::limit($question->body, 200) }}</p>
 
-        @foreach ($question->images as $image)
+        @if ($question->images->isNotEmpty())
             <div
-                class="w-full overflow-hidden my-5 dark:bg-neutral-800 backdrop-blur-xl bg-neutral-100 rounded-lg h-140 bg-center bg-no-repeat">
-                <img src="{{ $image->image }}" alt="Image" class="mx-auto object-contain h-140 rounded-lg">
+                class="galleryCont w-full h-140 relative rounded-lg group cursor-pointer flex items-center overflow-hidden my-5 dark:bg-neutral-800 backdrop-blur-xl bg-neutral-100">
+                @if ($question->images->count() > 1)
+                    <div
+                        class="btnLeft z-1 group-hover:flex hidden cursor-pointer hover:opacity-70 duration-300 transition-all bg-gray-300/80 absolute dark:bg-black/50 p-2 rounded-full top-1/2 -translate-y-1/2 left-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                        </svg>
+                    </div>
+                @endif
+
+                <div class="flex w-full h-full">
+                    @foreach ($question->images as $image)
+                        <div class="imagesCont duration-300 min-w-full bg-center bg-no-repeat rounded-lg">
+                            <img src="{{ $image?->image ? asset('storage/' . $image->image) : '' }}" alt="Image"
+                                class="image mx-auto object-contain h-140 rounded-lg">
+                        </div>
+                    @endforeach
+                </div>
+
+                @if ($question->images->count() > 1)
+                    <div
+                        class="dotsCont z-1 absolute bg-gray-400/80 dark:bg-neutral-500/50 py-1.5 px-3 flex items-center gap-1 rounded-full bottom-5 -translate-x-1/2 left-1/2">
+                        @for ($i = 0; $i < $question->images->count(); $i++)
+                            <div data-qty="{{ $i }}"
+                                class="dots h-3 w-3 hover:opacity-70 rounded-full dark:bg-white/80 bg-black/60 duration-300">
+                            </div>
+                        @endfor
+                    </div>
+                @endif
+
+                <div
+                    class="hidden closeGallery absolute flex items-center justify-center top-4 right-4 w-12 h-12 text-xl hover:opacity-80 duration-300 rounded-full border dark:border-neutral-700 dark:bg-neutral-900/80 border-black/30 bg-gray-300">
+                    ✕
+                </div>
+
+
+                @if ($question->images->count() > 1)
+                    <div
+                        class="btnRight z-1 hidden group-hover:flex cursor-pointer absolute hover:opacity-70 transition-all duration-300 bg-gray-300/80 dark:bg-black/50 p-2 rounded-full top-1/2 -translate-y-1/2 right-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke-width="1.5" stroke="currentColor" class="size-8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                        </svg>
+                    </div>
+                @endif
             </div>
-        @endforeach
+        @endif
+
     </div>
 
     <div class="flex items-center gap-4">
