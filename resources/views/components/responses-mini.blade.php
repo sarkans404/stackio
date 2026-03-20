@@ -36,7 +36,8 @@
 
     <a href="{{ route('question.show', $response->question->id) }}" class="flex items-center group gap-4">
         <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
-            <img src="{{ $response->user->avatar }}" alt="AV" class="w-full h-full object-cover rounded-full">
+            <img src="{{ $response->user?->avatar ? asset('storage/' . $response->user->avatar) : '' }}" alt="AV"
+                class="w-full h-full object-cover rounded-full">
         </div>
         <span class="font-medium group-hover:underline underline-offset-2">{{ $response->user->username }}</span>
         &bull;
