@@ -3,8 +3,8 @@
     <div class="flex items-center justify-between mb-2">
         <a href="{{ route('user.profile', $question->user->id) }}" class="flex items-center group gap-2 text-sm">
             <div class="w-8 h-8 bg-gray-300 dark:bg-gray-200 rounded-full overflow-hidden">
-                <img src="{{ $question->user->avatar }}" alt="Avatar"
-                    class="rounded-full w-full h-full object-cover object-center">
+                <img src="{{ $question->user?->avatar ? asset('storage/' . $question->user->avatar) : '' }}"
+                    alt="Avatar" class="rounded-full w-full h-full object-cover object-center">
             </div>
             <span
                 class="font-medium text-neutral-700 dark:text-gray-300 group-hover:underline underline-offset-2">{{ $question->user->username }}</span>
