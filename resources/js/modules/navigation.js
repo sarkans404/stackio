@@ -7,7 +7,7 @@ export default function initNavigation() {
 
         if (
             e.target.closest(
-                "a, button, .menu, .menu-btn, .action-btn, .share-btn, .comment-btn, .response-input, .response-block, .form-comment"
+                "a, button, .menu, .menu-btn, .imagesCont, .btnLeft, .btnRight, .dotsCont, .dots, .closeGallery, .action-btn, .share-btn, .comment-btn, .response-input, .response-block, .form-comment"
             )
         ) return;
 
