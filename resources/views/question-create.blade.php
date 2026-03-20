@@ -5,7 +5,7 @@
 @section('content')
     <section class="main-content max-w-150 translate-x-0 mx-auto my-15 duration-300">
         <h2 class="font-semibold dark:text-gray-200 mb-6 text-3xl">Create Question</h2>
-        <form action="{{ route('question.create') }}" method="post" class="w-full rounded-3xl">
+        <form action="{{ route('question.create') }}" enctype="multipart/form-data" method="post" class="w-full rounded-3xl">
             @csrf
             <div class="mb-8">
                 <div class="relative">
@@ -40,9 +40,9 @@
                 <span class="font-medium text-red-500">{{ $message }}</span>
             @enderror
 
-            <div class="flex item-start justify-between">
+            <div class="flex item-start justify-between mb-4">
                 <div>
-                    <input type="file" name="img" id="img" class="hidden">
+                    <input type="file" name="img[]" id="img" class="hidden" multiple>
                     @error('img')
                         <span class="font-medium text-red-500">{{ $message }}</span>
                     @enderror
@@ -54,11 +54,11 @@
                                 d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                         </svg>
                     </label>
-                    <div class="img-selected flex flex-col gap-1">
-                    </div>
                 </div>
                 <button type="submit"
                     class="px-6 py-2 text-lg font-semibold rounded-lg dark:bg-yellow-600 bg-blue-500 hover:bg-blue-600 dark:hover:bg-yellow-700 duration-300 cursor-pointer">Send</button>
+            </div>
+            <div id="previewContainer" class="img-selected flex flex-wrap w-full gap-1">
             </div>
         </form>
     </section>
