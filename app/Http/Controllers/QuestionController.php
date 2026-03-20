@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Question;
+use App\Models\QuestionImages;
 use App\Models\QuestionTag;
 use App\Models\RecentQuestions;
 use App\Models\Responses;
@@ -12,6 +13,7 @@ use App\Models\User;
 use App\Models\Votes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class QuestionController extends Controller
 {
@@ -137,12 +139,25 @@ class QuestionController extends Controller
     {
         $request->validate([
             'title' => 'required|min:3',
+            'body' => 'nullable|min:3',
+            'img' => 'nullable|array|max:10',
+            'img.*' => 'image|mimes:jpg,jpeg,png,webp|max:15360',
         ]);
         $question = Question::create([
             'user_id' => Auth::id(),
             'title' => $request->title,
             'body' => $request->text,
         ]);
+        if ($request->hasFile('img')) {
+            foreach ($request->file('img') as $image) {
+                $path = $image->store('questions', 'public');
+
+                QuestionImages::create([
+                    'question_id' => $question->id,
+                    'image' => $path,
+                ]);
+            }
+        }
 
         if ($request->tag) {
             $tag = Tags::where('slug', '=', $request->tag)->first();
@@ -159,7 +174,15 @@ class QuestionController extends Controller
     public function delete(Request $request)
     {
         if (Auth::check()) {
-            Question::where('id', $request->question_id)->delete();
+            $question = Question::where('id', $request->question_id);
+
+            $images = QuestionImages::where('question_id', $request->question_id)->get();
+
+            foreach ($images as $image) {
+                Storage::disk('public')->delete($image->image);
+            }
+
+            $question->delete();
         }
 
         return redirect()->route('home');
@@ -178,7 +201,7 @@ class QuestionController extends Controller
             ->findOrFail($id);
 
         if (Auth::user()->id !== $question->user_id) {
-            return redirect('home', 403);
+            return redirect()->route('home');
         }
         $tags = Tags::all();
 
@@ -193,13 +216,16 @@ class QuestionController extends Controller
 
         $request->validate([
             'title' => 'required|min:3',
+            'body' => 'nullable|min:3',
+            'img' => 'nullable|array|max:10',
+            'img.*' => 'image|mimes:jpg,jpeg,png,webp|max:15360',
         ]);
 
         $question = Question::with('question_tags')
             ->findOrFail($request->question_id);
 
         if (Auth::user()->id !== $question->user_id) {
-            return redirect('home', 403);
+            return redirect()->route('home');
         }
 
         $question->title = $request->title;
@@ -207,6 +233,36 @@ class QuestionController extends Controller
 
         $question->save();
 
+        if ($request->hasFile('img')) {
+            foreach ($request->file('img') as $image) {
+                $path = $image->store('questions', 'public');
+
+                QuestionImages::create([
+                    'question_id' => $question->id,
+                    'image' => $path,
+                ]);
+            }
+        }
+
         return redirect()->route('question.show', $question->id);
+    }
+
+    public function questionImagesRemove(Request $request)
+    {
+        if (! Auth::check()) {
+            return response()->json(['error' => 'Authentification failed!'], 403);
+        }
+
+        $image = QuestionImages::where('id', $request->id)->first();
+        $questionUser = Question::where('id', $image->question_id)->first();
+
+        if ($questionUser->user_id !== Auth::id()) {
+            return response()->json(['error' => 'Validation failed!'], 403);
+        }
+
+        Storage::disk('public')->delete($image->image);
+        $image->delete();
+
+        return response()->json(['success' => 'Image has removed!']);
     }
 }
