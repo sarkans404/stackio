@@ -7,6 +7,8 @@ import initGallery from "./modules/gallery";
 import initMenus from "./modules/menus";
 import initComments from "./modules/comments";
 import initClipboard from "./modules/clipboard";
+import initTags from "./modules/tags";
+import initTagsEdit from "./modules/tagsEdit";
 import initBackButton from "./modules/backButton";
 import initEditResponses from "./modules/editResponses";
 import initAvatarPreview from "./modules/avatarPreview";
@@ -27,6 +29,8 @@ document.addEventListener("DOMContentLoaded", () => {
     initMenus();
     initComments();
     initClipboard();
+    initTags();
+    initTagsEdit();
     initEditResponses();
     initAvatarPreview();
     initVote();
