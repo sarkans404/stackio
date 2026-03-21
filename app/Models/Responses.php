@@ -11,6 +11,7 @@ class Responses extends Model
         'question_id',
         'parent_id',
         'body',
+        'image',
     ];
 
     public function user()
