@@ -11,6 +11,7 @@ import initBackButton from "./modules/backButton";
 import initEditResponses from "./modules/editResponses";
 import initAvatarPreview from "./modules/avatarPreview";
 import initImageUploadPreview from "./modules/uploadPreview";
+import initResponseUpload from "./modules/responsePreview";
 import initVote from "./ajax/vote";
 import initSave from "./ajax/save";
 import initHide from "./ajax/hide";
@@ -34,4 +35,5 @@ document.addEventListener("DOMContentLoaded", () => {
     initClearRecent();
     initImageUploadPreview();
     initUploadRemove();
+    initResponseUpload();
 });
