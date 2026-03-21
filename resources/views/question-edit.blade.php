@@ -42,21 +42,17 @@
             @error('tag')
                 <span class="font-medium text-red-500">{{ $message }}</span>
             @enderror
-
-            @if ($question->tags)
-                <div class="flex items-center gap-2 mb-5">
+            <div id="tagsEditContainer" class="w-full mb-4 flex items-center gap-2 flex-wrap">
+                @if ($question->tags)
                     @foreach ($question->tags as $tag)
-                        <span
-                            class="text-white bg-gray-500 dark:bg-gray-700 pl-3 pr-2 py-1 rounded flex items-center gap-1">
-                            {{ $tag->name }}
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-5 hover:text-red-500 cursor-pointer duration-300">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-                            </svg>
-                        </span>
+                        <div class="text-white bg-gray-500 dark:bg-gray-700 px-3 py-1 rounded flex items-center gap-2">
+                            <span>{{ $tag->name }}</span>
+                            <button type="button" class="remove-tag text-sm hover:text-red-500 cursor-pointer">✕</button>
+                            <input type="hidden" name="tags[]" value="{{ $tag->name }}">
+                        </div>
                     @endforeach
-                </div>
-            @endif
+                @endif
+            </div>
 
             <div class="flex item-start justify-between mb-4">
                 <div>
