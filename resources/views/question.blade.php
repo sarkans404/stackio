@@ -258,8 +258,8 @@
                 @endif
             </div>
 
-            <div class="w-full my-6">
-                <form action="{{ route('responses.create') }}" method="post"
+            <div class="responseCont w-full my-6">
+                <form action="{{ route('responses.create') }}" method="post" enctype="multipart/form-data"
                     class="w-full border dark:border-neutral-600 border-neutral-400 rounded-3xl">
                     @csrf
                     <input type="hidden" name="question_id" class="hidden" value="{{ $question->id }}">
@@ -269,7 +269,7 @@
                         class="hidden w-full flex items-center justify-between px-4 py-1 rounded-3xl">
                         <div class="flex items-center gap-4">
                             <div>
-                                <input type="file" name="file" id="file" class="hidden">
+                                <input type="file" name="file" id="file" class="hidden inputResponse">
 
                                 <label for="file"
                                     class="w-10 h-10 flex items-center justify-center rounded-full dark:text-neutral-200 dark:hover:text-neutral-100 cursor-pointer dark:hover:bg-neutral-700 hover:bg-gray-300 duration-300">
@@ -289,8 +289,14 @@
                                 class="py-1.5 px-4 rounded-full dark:bg-yellow-600 bg-blue-500 dark:hover:bg-yellow-700 hover:bg-blue-700 duration-300 font-semibold cursor-pointer">Submit</button>
                         </div>
                     </div>
+                    <div class="responsePreview hidden img-selected p-2 flex flex-wrap w-full gap-4">
+
+                    </div>
                 </form>
                 @error('body')
+                    <span class="text-medium text-red-500">{{ $message }}</span>
+                @enderror
+                @error('file')
                     <span class="text-medium text-red-500">{{ $message }}</span>
                 @enderror
             </div>
@@ -380,18 +386,20 @@
                             {{ $responses->body }}
                         </p>
                         @if ($responses->user_id == Auth::id())
-                            <form action="{{ route('responses.edit') }}" method="post"
-                                class="edit-form hidden border border-gray-300 font-medium text-neutral-800 dark:border-neutral-500 dark:text-gray-100 rounded-xl">
+                            <form action="{{ route('responses.edit') }}" method="post" enctype="multipart/form-data"
+                                class="edit-form responseCont hidden border border-gray-300 font-medium text-neutral-800 dark:border-neutral-500 dark:text-gray-100 rounded-xl">
                                 @csrf
                                 <input type="hidden" name="user_id" value="{{ $responses->user->id }}" class="hidden">
                                 <input type="hidden" name="response_id" value="{{ $responses->id }}" class="hidden">
                                 <input type="hidden" name="question_id" value="{{ $question->id }}" class="hidden">
+                                <input type="hidden" name="remove_image" value="0" class="remove-image-input">
                                 <textarea name="body" id="body" class="w-full min-h-25 outline-none rounded-xl py-2 px-3">{{ $responses->body }}</textarea>
                                 <div class="w-full flex items-center justify-between px-4 py-1 rounded-3xl">
                                     <div class="flex items-center gap-4">
                                         <div>
-                                            <input type="file" name="file" id="file" class="hidden">
-                                            <label for="file"
+                                            <input type="file" name="file" id="file-{{ $responses->id }}"
+                                                class="hidden inputResponse">
+                                            <label for="file-{{ $responses->id }}"
                                                 class="w-10 h-10 flex items-center justify-center rounded-full dark:text-neutral-200 dark:hover:text-neutral-100 cursor-pointer dark:hover:bg-neutral-700 hover:bg-gray-300 duration-300">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                                     viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -410,15 +418,31 @@
                                             class="py-1.5 px-4 rounded-full dark:bg-yellow-600 bg-blue-500 dark:hover:bg-yellow-700 hover:bg-blue-700 duration-300 font-semibold cursor-pointer">Submit</button>
                                     </div>
                                 </div>
+                                <div class="responsePreview img-selected p-2 flex flex-wrap w-full gap-4">
+                                    @if (isset($responses->image))
+                                        <div class="my-2 relative group">
+                                            <img src="{{ asset('storage/' . $responses->image) ? asset('storage/' . $responses->image) : '' }}"
+                                                class="h-28 object-cover rounded-lg">
+                                            <button type="button"
+                                                class="absolute top-1 right-1 bg-black/60 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 duration-200">
+                                                ✕
+                                            </button>
+                                        </div>
+                                    @endif
+                                </div>
                             </form>
                             @error('body')
                                 <div class="font-medium text-red-500">{{ $message }}</div>
                             @enderror
+                            @error('file')
+                                <span class="text-medium text-red-500">{{ $message }}</span>
+                            @enderror
                         @endif
 
                         @if (isset($responses->image))
-                            <div class="my-2">
-                                <img src="{{ $responses->image }}" alt="img" class="h-50 object-contain">
+                            <div class="my-2 responseImage">
+                                <img src="{{ asset('storage/' . $responses->image) ? asset('storage/' . $responses->image) : '' }}"
+                                    class="h-50 object-cover rounded-lg">
                             </div>
                         @endif
 
@@ -468,8 +492,8 @@
 
                         </div>
 
-                        <form action="{{ route('responses.create') }}" method="post"
-                            class="form-comment w-full border dark:border-neutral-600 border-neutral-400 rounded-3xl hidden">
+                        <form action="{{ route('responses.create') }}" method="post" enctype="multipart/form-data"
+                            class="form-comment responseCont w-full border dark:border-neutral-600 border-neutral-400 rounded-3xl hidden">
                             <textarea name="body" id="body" placeholder="Response the question"
                                 class="response-input px-4 py-2.5 w-full min-h-12 h-12 text-lg outline-none rounded-3xl"></textarea>
                             <input type="hidden" name="question_id" class="hidden" value="{{ $question->id }}">
@@ -479,8 +503,9 @@
                                 class="response-block hidden w-full flex items-center justify-between px-4 py-1 rounded-3xl">
                                 <div class="flex items-center gap-4">
                                     <div>
-                                        <input type="file" name="file" id="file" class="hidden">
-                                        <label for="file"
+                                        <input type="file" name="file" id="file2-{{ $responses->id }}"
+                                            class="hidden inputResponse">
+                                        <label for="file2-{{ $responses->id }}"
                                             class="w-10 h-10 flex items-center justify-center rounded-full dark:text-neutral-200 dark:hover:text-neutral-100 cursor-pointer dark:hover:bg-neutral-700 hover:bg-gray-300 duration-300">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="size-5">
@@ -498,6 +523,15 @@
                                         class="py-1.5 px-4 rounded-full dark:bg-yellow-600 bg-blue-500 dark:hover:bg-yellow-700 hover:bg-blue-700 duration-300 font-semibold cursor-pointer">Submit</button>
                                 </div>
                             </div>
+                            <div class="responsePreview hidden img-selected p-2 flex flex-wrap w-full gap-4">
+
+                            </div>
+                            @error('body')
+                                <span class="text-medium text-red-500">{{ $message }}</span>
+                            @enderror
+                            @error('file')
+                                <span class="text-medium text-red-500">{{ $message }}</span>
+                            @enderror
                         </form>
                     </div>
                     {{--  --}}
@@ -581,7 +615,8 @@
 
                             @if ($comment->user_id == Auth::id())
                                 <form action="{{ route('responses.edit') }}" method="post"
-                                    class="edit-form hidden border border-gray-300 font-medium text-neutral-800 dark:border-neutral-500 dark:text-gray-100 rounded-xl">
+                                    enctype="multipart/form-data"
+                                    class="edit-form responseCont hidden border border-gray-300 font-medium text-neutral-800 dark:border-neutral-500 dark:text-gray-100 rounded-xl">
                                     @csrf
                                     <input type="hidden" name="response_id" value="{{ $comment->id }}"
                                         class="hidden">
@@ -589,12 +624,14 @@
                                         class="hidden">
                                     <input type="hidden" name="question_id" value="{{ $question->id }}"
                                         class="hidden">
+                                    <input type="hidden" name="remove_image" value="0" class="remove-image-input">
                                     <textarea name="body" id="body" class="w-full min-h-25 outline-none rounded-xl py-2 px-3">{{ $comment->body }}</textarea>
                                     <div class="w-full flex items-center justify-between px-4 py-1 rounded-3xl">
                                         <div class="flex items-center gap-4">
                                             <div>
-                                                <input type="file" name="file" id="file" class="hidden">
-                                                <label for="file"
+                                                <input type="file" name="file" id="file-{{ $comment->id }}"
+                                                    class="hidden inputResponse">
+                                                <label for="file-{{ $comment->id }}"
                                                     class="w-10 h-10 flex items-center justify-center rounded-full dark:text-neutral-200 dark:hover:text-neutral-100 cursor-pointer dark:hover:bg-neutral-700 hover:bg-gray-300 duration-300">
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                                         viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -613,15 +650,31 @@
                                                 class="py-1.5 px-4 rounded-full dark:bg-yellow-600 bg-blue-500 dark:hover:bg-yellow-700 hover:bg-blue-700 duration-300 font-semibold cursor-pointer">Submit</button>
                                         </div>
                                     </div>
+                                    <div class="responsePreview hidden img-selected p-2 flex flex-wrap w-full gap-4">
+                                        @if (isset($comment->image))
+                                            <div class="my-2 relative group">
+                                                <img src="{{ asset('storage/' . $comment->image) ? asset('storage/' . $comment->image) : '' }}"
+                                                    class="h-28 object-cover rounded-lg">
+                                                <button type="button"
+                                                    class="absolute top-1 right-1 bg-black/60 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 duration-200">
+                                                    ✕
+                                                </button>
+                                            </div>
+                                        @endif
+                                    </div>
                                 </form>
                                 @error('body')
                                     <div class="font-medium text-red-500">{{ $message }}</div>
+                                @enderror
+                                @error('file')
+                                    <span class="text-medium text-red-500">{{ $message }}</span>
                                 @enderror
                             @endif
 
                             @if (isset($comment->image))
                                 <div class="my-2">
-                                    <img src="{{ $comment->image }}" alt="img" class="h-50 object-contain">
+                                    <img src="{{ asset('storage/' . $comment->image) ? asset('storage/' . $comment->image) : '' }}"
+                                        class="h-50 object-contain">
                                 </div>
                             @endif
 
@@ -659,6 +712,7 @@
                                         class="downvoteText font-semibold text-gray-500 dark:text-gray-400">{{ $comment->downvotes }}</span>
                                 </div>
 
+                                {{-- HIDDEN --}}
                                 <div
                                     class="hidden reply-btn flex items-center justify-center gap-2 rounded-full px-3 h-10 cursor-pointer dark:hover:bg-neutral-700 hover:bg-gray-400 duration-300">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -669,9 +723,11 @@
                                     <span
                                         class="font-medium select-none text-neutral-700 dark:text-neutral-300">Reply</span>
                                 </div>
+                                {{-- ----- --}}
 
                             </div>
 
+                            {{-- HIDDEN --}}
                             <form action="{{ route('responses.create') }}" method="post"
                                 class="form-comment w-full border dark:border-neutral-600 border-neutral-400 rounded-3xl hidden">
                                 <textarea name="body" id="response-input" placeholder="Response the question"
@@ -704,6 +760,8 @@
                                     </div>
                                 </div>
                             </form>
+                            {{-- ----- --}}
+
                         </div>
                     @endforeach
                 @endforeach
