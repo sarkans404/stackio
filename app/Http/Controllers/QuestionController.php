@@ -14,6 +14,7 @@ use App\Models\Votes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class QuestionController extends Controller
 {
@@ -159,13 +160,21 @@ class QuestionController extends Controller
             }
         }
 
-        if ($request->tag) {
-            $tag = Tags::where('slug', '=', $request->tag)->first();
+        if ($request->tags) {
+            foreach ($request->tags as $tagName) {
 
-            QuestionTag::create([
-                'question_id' => $question->id,
-                'tag_id' => $tag->id,
-            ]);
+                $slug = Str::slug($tagName);
+
+                $tag = Tags::firstOrCreate(
+                    ['slug' => $slug],
+                    ['name' => $tagName]
+                );
+
+                QuestionTag::create([
+                    'question_id' => $question->id,
+                    'tag_id' => $tag->id,
+                ]);
+            }
         }
 
         return redirect()->route('question.show', $question->id);
@@ -232,6 +241,28 @@ class QuestionController extends Controller
         $question->body = $request->body;
 
         $question->save();
+
+        if ($request->has('tags')) {
+
+            QuestionTag::where('question_id', $question->id)->delete();
+
+            foreach ($request->tags as $tagName) {
+
+                $slug = Str::slug($tagName);
+
+                $tag = Tags::firstOrCreate(
+                    ['slug' => $slug],
+                    ['name' => $tagName]
+                );
+
+                QuestionTag::create([
+                    'question_id' => $question->id,
+                    'tag_id' => $tag->id,
+                ]);
+            }
+        } else {
+            QuestionTag::where('question_id', $question->id)->delete();
+        }
 
         if ($request->hasFile('img')) {
             foreach ($request->file('img') as $image) {
