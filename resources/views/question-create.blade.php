@@ -26,7 +26,7 @@
                 <span class="font-medium text-red-500">{{ $message }}</span>
             @enderror
 
-            <input list="tags" type="text" name="tag" id="tag" placeholder="Add tags"
+            <input list="tags" type="text" name="tag[]" id="tag" placeholder="Add tags"
                 value="{{ old('tag') }}"
                 class="mb-4 border p-4 dark:border-neutral-600 focus:border-neutral-300 dark:focus:border-neutral-500 duration-300 border-neutral-400 w-full rounded-2xl outline-none">
             @if ($tags)
@@ -39,6 +39,8 @@
             @error('tag')
                 <span class="font-medium text-red-500">{{ $message }}</span>
             @enderror
+            <div id="tagsContainer" class="w-full mb-4 flex items-center gap-2 flex-wrap">
+            </div>
 
             <div class="flex item-start justify-between mb-4">
                 <div>
