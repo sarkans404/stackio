@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Follows;
 use App\Models\Question;
 use App\Models\Responses;
 use App\Models\SavedQuestions;
@@ -73,6 +74,13 @@ class HomeController extends Controller
         }
     }
 
+    private function getUserFollows()
+    {
+        return Follows::where('user_id', Auth::id())
+            ->pluck('user_id', 'question_id')
+            ->toArray();
+    }
+
     public function index()
     {
 
@@ -87,6 +95,7 @@ class HomeController extends Controller
             'userQty' => User::count(),
             'popularTags' => $this->getPopularTags(),
             'recentPosts' => $this->getRecentPosts(),
+            'userFollows' => $this->getUserFollows(),
         ]);
     }
 
