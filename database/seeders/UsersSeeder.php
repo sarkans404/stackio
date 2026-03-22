@@ -18,7 +18,7 @@ class UsersSeeder extends Seeder
             'email' => 'admin@stackio.test',
             'password' => Hash::make('password'),
             'role' => 'admin',
-            'avatar' => 'https://placeholdit.com/200x200/dddddd/999999?text=Avatar',
+            'avatar' => null,
             'bio' => 'Stackio administrator',
             'reputation' => 9999,
         ]);
