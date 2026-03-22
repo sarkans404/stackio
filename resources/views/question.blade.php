@@ -490,6 +490,20 @@
                                 <span class="font-medium select-none text-neutral-700 dark:text-neutral-300">Reply</span>
                             </div>
 
+                            @if (Auth::id() === $question->user_id)
+                                <form action="{{ route('responses.mark.accepted') }}" method="post"
+                                    class="flex items-center">
+                                    @csrf
+                                    <input type="hidden" name="responses_id" class="hidden"
+                                        value="{{ $responses->id }}">
+                                    <input type="hidden" name="question_id" class="hidden"
+                                        value="{{ $question->id }}">
+
+                                    <button type="submit"
+                                        class="py-2 px-6 rounded-full cursor-pointer dark:hover:bg-neutral-700 hover:bg-gray-400 duration-300 {{ $responses->is_accepted ? 'bg-green-600' : '' }}">Accepted</button>
+                                </form>
+                            @endif
+
                         </div>
 
                         <form action="{{ route('responses.create') }}" method="post" enctype="multipart/form-data"
