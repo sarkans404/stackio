@@ -24,14 +24,16 @@
             </div>
             <div
                 class="menu z-20 action-menu hidden absolute top-10 right-0 translate-y-0 w-max rounded-xl overflow-hidden shadow-xl bg-[#f8f8f8] dark:bg-[#1d1f20] flex flex-col">
-                <button type="button"
-                    class="w-full flex items-center gap-4 px-4 py-2 cursor-pointer bg-[#f8f8f8] dark:bg-[#101314] hover:bg-gray-200 dark:hover:bg-[#313232] duration-300">
+                <button type="button" data-question-id="{{ $question->id }}"
+                    class="w-full followBtn flex items-center gap-4 px-4 py-2 cursor-pointer bg-[#f8f8f8] dark:bg-[#101314] hover:bg-gray-200 dark:hover:bg-[#313232] duration-300">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
                     </svg>
-                    Follow reponse
+                    <span class="followText">
+                        {{ isset($userFollows[$question->id]) ? 'Unfollow' : 'Follow' }}
+                    </span>
                 </button>
                 <button type="button" data-user-id="{{ Auth::id() }}" data-question-id="{{ $question->id }}"
                     class="saveBtn {{ ($userSaved[$question->id] ?? -1) == Auth::id() ? 'text-blue-500 dark:text-yellow-500' : '' }} w-full flex items-center gap-4 px-4 py-2 cursor-pointer bg-[#f8f8f8] dark:bg-[#101314] hover:bg-gray-200 dark:hover:bg-[#313232] duration-300">
@@ -53,7 +55,7 @@
 
                     <span>Hide Post</span>
                 </button>
-                <button type="button"
+                <button type="button" data-question-id="{{ $question->id }}"
                     class="w-full flex items-center gap-4 px-4 py-2 cursor-pointer bg-[#f8f8f8] dark:bg-[#101314] hover:bg-gray-200 dark:hover:bg-[#313232] duration-300">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
@@ -104,8 +106,8 @@
                 @if ($question->images->count() > 1)
                     <div
                         class="btnLeft z-1 group-hover:flex hidden cursor-pointer hover:opacity-70 duration-300 transition-all bg-gray-300/80 absolute dark:bg-black/50 p-2 rounded-full top-1/2 -translate-y-1/2 left-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="size-8">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke-width="1.5" stroke="currentColor" class="size-8">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                         </svg>
                     </div>
