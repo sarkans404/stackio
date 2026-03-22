@@ -21,8 +21,8 @@
                 </div>
                 @if (isset($question->images[0]->image))
                     <div class="w-[30%] aspect-square">
-                        <img src="{{ $question->images[0]->image }}" alt="image"
-                            class="border w-full h-full rounded-lg object-cover">
+                        <img src="{{ asset('storage/' . $question->images[0]->image) ? asset('storage/' . $question->images[0]->image) : '' }}"
+                            alt="image" class="border w-full h-full rounded-lg object-cover">
                     </div>
                 @endif
             </div>
