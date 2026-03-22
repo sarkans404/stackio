@@ -19,6 +19,7 @@ import initSave from "./ajax/save";
 import initHide from "./ajax/hide";
 import initClearRecent from "./ajax/clearRecent";
 import initUploadRemove from "./ajax/uploadRemove";
+import initFollow from "./ajax/follow";
 
 document.addEventListener("DOMContentLoaded", () => {
     initTheme();
@@ -40,4 +41,5 @@ document.addEventListener("DOMContentLoaded", () => {
     initImageUploadPreview();
     initUploadRemove();
     initResponseUpload();
+    initFollow();
 });
