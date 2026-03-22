@@ -20,7 +20,7 @@ class ResponsesSeeder extends Seeder
                 'body' => 'Response TEST 1',
                 'upvotes' => 3,
                 'downvotes' => 0,
-                'image' => 'https://placeholdit.com/300x300/dddddd/999999?text=USER+IMAGE',
+                'image' => null,
                 'is_accepted' => false,
                 'created_at' => now()->copy()->addDays(3),
                 'updated_at' => now()->copy()->addDays(3),
