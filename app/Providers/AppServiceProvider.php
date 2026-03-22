@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Question;
+use App\Models\Responses;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +22,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Relation::morphMap([
+            'response' => Responses::class,
+            'question' => Question::class,
+        ]);
     }
 }
