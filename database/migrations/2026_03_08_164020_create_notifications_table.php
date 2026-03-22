@@ -22,7 +22,10 @@ return new class extends Migration
                 ->constrained('users');
 
             $table->morphs('notifiable');
-            
+
+            $table->string('type');
+            $table->boolean('is_read')->default(false);
+
             $table->timestamps();
         });
     }
