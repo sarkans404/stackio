@@ -45,7 +45,7 @@ class QuestionController extends Controller
                 ->where('recent_questions.user_id', Auth::id())
                 ->orderByDesc('recent_questions.updated_at')
                 ->limit(5)
-                ->with('user')
+                ->with('user', 'images')
                 ->get();
         }
     }
