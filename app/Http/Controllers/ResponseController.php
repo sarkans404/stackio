@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Follows;
+use App\Models\Notifications;
 use App\Models\Question;
 use App\Models\Responses;
 use Illuminate\Http\Request;
@@ -20,7 +22,7 @@ class ResponseController extends Controller
             $path = $request->file('file')
                 ->store('responses', 'public');
 
-            Responses::create([
+            $response = Responses::create([
                 'user_id' => Auth::id(),
                 'question_id' => $request->question_id,
                 'parent_id' => $request->parent_id,
@@ -28,7 +30,7 @@ class ResponseController extends Controller
                 'image' => $path,
             ]);
         } else {
-            Responses::create([
+            $response = Responses::create([
                 'user_id' => Auth::id(),
                 'question_id' => $request->question_id,
                 'parent_id' => $request->parent_id,
@@ -40,6 +42,37 @@ class ResponseController extends Controller
         if ($request->parent_id === null) {
             $question->answers += 1;
             $question->save();
+        }
+
+        if (! $request->parent_id) {
+
+            $followers = Follows::where('question_id', $request->question_id)
+                ->where('user_id', '!=', Auth::id())
+                ->pluck('user_id');
+
+            foreach ($followers as $userId) {
+                Notifications::create([
+                    'user_id' => $userId,
+                    'actor_id' => Auth::id(),
+                    'notifiable_id' => $response->id,
+                    'notifiable_type' => 'response',
+                    'type' => 'new_response',
+                ]);
+            }
+        }
+        if ($request->parent_id) {
+
+            $parent = Responses::find($request->parent_id);
+
+            if ($parent && $parent->user_id !== Auth::id()) {
+                Notifications::create([
+                    'user_id' => $parent->user_id,
+                    'actor_id' => Auth::id(),
+                    'notifiable_id' => $response->id,
+                    'notifiable_type' => 'responses',
+                    'type' => 'new_comment',
+                ]);
+            }
         }
 
         return redirect()->route('question.show', $request->question_id);
@@ -93,6 +126,19 @@ class ResponseController extends Controller
 
             $response->save();
         }
+
+        return redirect()->route('question.show', $request->question_id);
+    }
+
+    public function markAsAccepted(Request $request)
+    {
+        if (! Auth::id()) {
+            return redirect()->route('login');
+        }
+
+        $response = Responses::findOrFail($request->responses_id);
+        $response->is_accepted = ! $response->is_accepted;
+        $response->save();
 
         return redirect()->route('question.show', $request->question_id);
     }
