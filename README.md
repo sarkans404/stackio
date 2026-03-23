@@ -55,6 +55,7 @@ StackIO is a full-stack Q&A web application inspired by platforms like StackOver
 - Hide / unhide questions
 - Follow questions
 - Recently viewed questions tracking
+- Search system
 
 ### 🔔 Notifications System
 
