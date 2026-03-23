@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Stackio') - Stackio</title>
 
+    <link rel="shortcut icon" href="{{ asset('assets/favicon/stackio.ico') }}" type="image/x-icon">
+
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @endif
